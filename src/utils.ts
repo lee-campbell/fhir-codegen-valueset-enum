@@ -4,7 +4,14 @@
  * @returns The sanitised string.
  */
 const sanitiseName = (name: string): string => {
-  return name.replace(/[^\w$]/g, '_');
+  let sanitised = '';
+  if (name) {
+    sanitised = name.replace(/[^\w$]/g, '_');
+    if (/^[0-9]/.test(sanitised)) {
+      sanitised = `_${sanitised}`;
+    }
+  }
+  return sanitised
 }
 
 export {

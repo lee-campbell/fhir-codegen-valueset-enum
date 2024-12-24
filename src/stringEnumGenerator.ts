@@ -1,6 +1,6 @@
-import PropertyNamingStrategy from "./propertyNamingStrategy";
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from "./propertyNamingStrategy";
 import { ValueSet, ValueSetExpansionContains } from "./types";
-import EnumNamingStrategy from "./enumNamingStrategy";
+import EnumNamingStrategy, { EnumNamingStrategyType } from "./enumNamingStrategy";
 
 type EnumDefinition = {
   name: string;
@@ -11,6 +11,7 @@ type PropertyDefinition = {
   name: string;
   value: string;
   comment?: string;
+  deprecated?: boolean;
 };
 
 type EnumGeneratorOptions = {
@@ -18,44 +19,71 @@ type EnumGeneratorOptions = {
   propertyNamingStrategy: PropertyNamingStrategy;
 }
 
+const getCommentString = (prop: PropertyDefinition): string => {
+  if (!prop.comment) return '';
+  let comment = `/**\n * ${prop.comment}\n`;
+  if (prop.deprecated) {
+    comment += ' * @deprecated This concept is marked as inactive in the code system\n';
+  }
+  comment += '*/\n';
+  return comment;
+};
+
 const toTypeScriptString = (
   enumDef: EnumDefinition,
   properties: PropertyDefinition[],
 ): string => {
-  return `${enumDef.comment ? `/* ${enumDef.comment} */\n` : ''}enum ${enumDef.name} {
-  ${properties.map(p => {
-    return `  ${p.comment ? `/* ${p.comment} */\n` : ''}${p.name}= '${p.value}';\n`;
-  })}
-  }`;
+  let value = `${enumDef.comment ? `/** ${enumDef.comment} */\n` : ''}enum ${enumDef.name} {`;
+  value += properties.map(p => `  ${getCommentString(p)}${p.name}= '${p.value}',`).join('\n');
+  value += '}\n';
+  return value;
 }
 
 const getPropertyDefintionsFromContains = (
+  definitions: PropertyDefinition[] = [],
   namingStrategy: PropertyNamingStrategy,
   contains: ValueSetExpansionContains[],
   parent?: ValueSetExpansionContains,
 ): PropertyDefinition[] => {
-  return contains.flatMap(c => {
-    if (c.contains) {
-      return getPropertyDefintionsFromContains(namingStrategy, c.contains, c);
+  contains.forEach(c => {
+    if (!c.abstract) {
+      const def: PropertyDefinition = {
+        name: namingStrategy.getName(c, parent),
+        comment: c.display,
+        value: c.code,
+        // @ts-ignore
+        deprecated: c.inactive,
+      };
+      
+      definitions.push(def);
     }
-
-    const def: PropertyDefinition = {
-      name: namingStrategy.getName(c, parent),
-      comment: c.display,
-      value: c.code,
-    };
-
-    return def;
+    
+    if (c.contains) {
+      getPropertyDefintionsFromContains(definitions, namingStrategy, c.contains, c);
+    }
   });
+
+  return definitions;
+};
+
+const defaultOptions: EnumGeneratorOptions = {
+  enumNamingStrategy: new EnumNamingStrategy({ type: EnumNamingStrategyType.SIMPLE }),
+  propertyNamingStrategy: new PropertyNamingStrategy({ type: PropertyNamingStrategyType.DISPLAY }),
 };
 
 /**
  * Creates a string representation of the TypeScript enum.
  * @param vs The expanded ValueSet from which the enum is to be generated.
  */
-const generateStringEnum = (vs: ValueSet, options: EnumGeneratorOptions): string => {
+const generateStringEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): string => {
   if (!vs.expansion || !vs.expansion.contains) {
     throw new Error('The supplied ValueSet must contain an expansion in order to generate an enum of its values.');
+  }
+
+  if (options) {
+    options = Object.assign(defaultOptions, options);
+  } else {
+    options = defaultOptions;
   }
 
   const enumDef: EnumDefinition = {
@@ -63,7 +91,7 @@ const generateStringEnum = (vs: ValueSet, options: EnumGeneratorOptions): string
     comment: vs.description,
   };
 
-  const properties = getPropertyDefintionsFromContains(options.propertyNamingStrategy, vs.expansion.contains);
+  const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy, vs.expansion.contains);
 
   return toTypeScriptString(enumDef, properties);
 }
