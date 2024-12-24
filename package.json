@@ -1,0 +1,27 @@
+{
+  "name": "fhir-codegen-valueset-enum",
+  "version": "1.0.0",
+  "description": "Code generator to create TypeScript enums from FHIR ValueSets",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --coverage"
+  },
+  "keywords": [
+    "fhir",
+    "valueset",
+    "typescript",
+    "codegen",
+    "enum",
+    "generator"
+  ],
+  "author": "Lee Campbell <https://github.com/lee-campbell>",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.8",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@types/fhir": "^0.0.41"
+  }
+}

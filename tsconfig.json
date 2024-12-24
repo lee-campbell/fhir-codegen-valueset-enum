@@ -1,0 +1,6 @@
+{
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "compilerOptions": {
+    "lib": ["ES2022"]
+  }
+}

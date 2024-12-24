@@ -1,0 +1,90 @@
+{
+  "resourceType": "ValueSet",
+  "meta": {
+    "lastUpdated": "2023-03-26T15:21:02.749+11:00",
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
+    ]
+  },
+  "url": "http://hl7.org/fhir/ValueSet/issue-severity",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.3.408"
+    },
+    {
+      "use": "old",
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.3.397"
+    },
+    {
+      "use": "old",
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.2.223"
+    }
+  ],
+  "version": "5.0.0",
+  "name": "IssueSeverity",
+  "title": "Issue Severity",
+  "status": "active",
+  "experimental": false,
+  "date": "2020-12-28T16:55:11+11:00",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "system": "http://unstats.un.org/unsd/methods/m49/m49.htm",
+          "code": "001",
+          "display": "World"
+        }
+      ]
+    }
+  ],
+  "immutable": true,
+  "expansion": {
+    "identifier": "urn:uuid:c5425f6e-0ef6-4ba5-a86e-187265c6893f",
+    "timestamp": "2024-12-24T11:02:00.554Z",
+    "total": 5,
+    "parameter": [
+      {
+        "name": "displayLanguage",
+        "valueCode": "en-GB, en-US; q=0.9, en; q=0.8"
+      },
+      {
+        "name": "used-codesystem",
+        "valueUri": "http://hl7.org/fhir/issue-severity|5.0.0"
+      },
+      {
+        "name": "version",
+        "valueUri": "http://hl7.org/fhir/issue-severity|5.0.0"
+      }
+    ],
+    "contains": [
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "fatal",
+        "display": "Fatal"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "error",
+        "display": "Error"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "warning",
+        "display": "Warning"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "information",
+        "display": "Information"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "success",
+        "display": "Operation Successful"
+      }
+    ]
+  }
+}
