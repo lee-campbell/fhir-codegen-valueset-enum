@@ -14,7 +14,7 @@ type PropertyDefinition = {
   deprecated?: boolean;
 };
 
-type EnumGeneratorOptions = {
+export type EnumGeneratorOptions = {
   enumNamingStrategy: EnumNamingStrategy;
   propertyNamingStrategy: PropertyNamingStrategy;
 }

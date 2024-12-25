@@ -1,7 +1,9 @@
 import { glob, readFile } from "node:fs/promises";
 import { ValueSet } from "./types";
+import * as prettier from 'prettier';
+import generateStringEnum, { EnumGeneratorOptions } from "./stringEnumGenerator";
 
-type ProcessingOptions = {
+type ProcessingOptions = Partial<EnumGeneratorOptions> & {
   inputFilePattern?: string;
   inputData?: string | Buffer;
 };
@@ -68,9 +70,9 @@ const process = async (options: ProcessingOptions): Promise<string[]> => {
     throw new Error('None of the supplied inputs contains a FHIR ValueSet.');
   }
 
-  // do the enum generation bit:
-
-  // prettify it:
-
-  // return it:
+  return await Promise.all(
+    valueSets
+      .map(v => generateStringEnum(v, options))
+      .map(e => prettier.format(e))
+  );
 };

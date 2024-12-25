@@ -28,6 +28,7 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
-    "@types/fhir": "^0.0.41"
+    "@types/fhir": "^0.0.41",
+    "prettier": "^3.4.2"
   }
 }
