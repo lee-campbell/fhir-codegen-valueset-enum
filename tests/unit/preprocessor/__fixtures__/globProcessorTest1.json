@@ -1,3 +1,4 @@
 {
-  "resourceType": "ValueSet"
+  "resourceType": "ValueSet",
+  "id": "1"
 }

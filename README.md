@@ -8,7 +8,7 @@ Code generator for creating TypeScript enums from FHIR ValueSets
 - [ ] Generate from $expand URLs (e.g. https://tx.fhir.org/r5/ValueSet/issue-severity/$expand?_format=json)
 - [ ] Generate from search URLs (e.g. https://tx.fhir.org/r5/ValueSet), with "followPages" option
 - [ ] CLI
-- [ ] Print to file/stdout
+- [x] Print to file/stdout
 - [ ] Option to add a namespace to output enums
 - [ ] Bring your own linting
 - [ ] Object enums (or as close as TypeScript will allow)
