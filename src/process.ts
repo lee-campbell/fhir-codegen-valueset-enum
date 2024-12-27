@@ -5,6 +5,7 @@ import bufferProcessor from "./preprocessor/bufferProcessor";
 import deserialise from "./deserialise";
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import urlProcessor from './preprocessor/urlProcessor';
 
 type ProcessingOptions = Partial<EnumGeneratorOptions> & {
   inputFilePattern?: string;
@@ -14,6 +15,8 @@ type ProcessingOptions = Partial<EnumGeneratorOptions> & {
    * enum generation will be written to `stdout`.
    */
   outputDirectory?: string;
+  url?: string | URL;
+  followLinks?: boolean;
 };
 
 const processInput = async (input: string, options: ProcessingOptions): Promise<void> => {
@@ -49,6 +52,13 @@ const processInputs = async (options: ProcessingOptions): Promise<void> => {
       { data: options.inputData },
       async (data) => { await processInput(data, options) },
     );
+  }
+
+  if (options.url) {
+    await urlProcessor(
+      { url: options.url, followLinks: options.followLinks },
+      async (data) => { await processInput(data, options) },
+    )
   }
 };
 

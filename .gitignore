@@ -2,3 +2,4 @@ dist/
 coverage/
 node_modules/
 tests/integration/__outputs__/
+tests/e2e/__outputs__/

@@ -72,4 +72,41 @@ describe('process tests', () => {
 
     expect(outputValue).toEqual(expectedValue);
   });
+
+  it('Prints a prettified enum based upon the supplied URL.', async () => {
+    const mockFetch = vi.fn();
+    global.fetch = mockFetch;
+    
+    const mockHeaders = new Headers();
+    mockHeaders.set('Content-Type', 'application/fhir+json');
+    
+    const v: ValueSet = {
+      resourceType: 'ValueSet',
+      name: 'EndToEnd',
+      description: 'Simple value set',
+      status: 'active',
+      expansion: {
+        timestamp: new Date().toISOString(),
+        contains: [{
+          inactive: true,
+          code: 'thi',
+          system: 'http://example.com',
+          display: 'Thing',
+        }],
+      },
+    };
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      headers: mockHeaders,
+      json: () => Promise.resolve(v),
+    });
+
+    await processInputs({
+      url: 'http://example.com/ValueSet/1/$expand',
+    });
+
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'simpleValueSetEnum.ts'), 'utf-8');
+    expect(logSpy).toHaveBeenCalledWith(expectedValue);
+  });
 });
