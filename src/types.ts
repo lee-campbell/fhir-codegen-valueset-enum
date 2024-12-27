@@ -10,6 +10,12 @@ import { ValueSetExpansionContains as ValueSetExpansionContainsR4 } from "fhir/r
 import { ValueSetExpansionContains as ValueSetExpansionContainsR4B } from "fhir/r4b";
 import { ValueSetExpansionContains as ValueSetExpansionContainsR5 } from "fhir/r5";
 
+import { Bundle as BundleR2 } from "fhir/r2";
+import { Bundle as BundleR3 } from "fhir/r3";
+import { Bundle as BundleR4 } from "fhir/r4";
+import { Bundle as BundleR4B } from "fhir/r4b";
+import { Bundle as BundleR5 } from "fhir/r5";
+
 export type ValueSet = 
   | ValueSetR2
   | ValueSetR3
@@ -23,3 +29,10 @@ export type ValueSetExpansionContains =
   | ValueSetExpansionContainsR4
   | ValueSetExpansionContainsR4B
   | ValueSetExpansionContainsR5;
+
+export type Bundle<T = ValueSet> = 
+  | BundleR2
+  | BundleR3
+  | BundleR4
+  | BundleR4B
+  | BundleR5;

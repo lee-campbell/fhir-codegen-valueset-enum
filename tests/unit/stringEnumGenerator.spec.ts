@@ -167,4 +167,27 @@ describe('stringEnumGenerator tests', () => {
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
+
+  it('Includes the "export" keyword when instructed to do so.', () => {
+    const vs: ValueSet = {
+      resourceType: 'ValueSet',
+      name: 'Simple',
+      description: 'Simple value set',
+      status: 'active',
+      expansion: {
+        timestamp: new Date().toISOString(),
+        contains: [{
+          code: '1234',
+          system: 'http://example.com',
+          display: 'Thing',
+        }],
+      },
+    };
+
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'exportedValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
+
+    const result = generateStringEnum(vs, { includeExportKeyword: true });
+
+    expect(result.replace(/\s/g, '')).toEqual(expectedValue);
+  });
 });

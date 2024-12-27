@@ -15,6 +15,7 @@ type PropertyDefinition = {
 };
 
 export type EnumGeneratorOptions = {
+  includeExportKeyword?: boolean;
   enumNamingStrategy: EnumNamingStrategy;
   propertyNamingStrategy: PropertyNamingStrategy;
 }
@@ -32,8 +33,9 @@ const getCommentString = (prop: PropertyDefinition): string => {
 const toTypeScriptString = (
   enumDef: EnumDefinition,
   properties: PropertyDefinition[],
+  includeExportKeyword: boolean,
 ): string => {
-  let value = `${enumDef.comment ? `/** ${enumDef.comment} */\n` : ''}enum ${enumDef.name} {`;
+  let value = `${enumDef.comment ? `/** ${enumDef.comment} */\n` : ''}${includeExportKeyword ? 'export ' : ''}enum ${enumDef.name} {\n`;
   value += properties.map(p => `  ${getCommentString(p)}${p.name}= '${p.value}',`).join('\n');
   value += '}\n';
   return value;
@@ -67,6 +69,7 @@ const getPropertyDefintionsFromContains = (
 };
 
 const defaultOptions: EnumGeneratorOptions = {
+  includeExportKeyword: false,
   enumNamingStrategy: new EnumNamingStrategy({ type: EnumNamingStrategyType.SIMPLE }),
   propertyNamingStrategy: new PropertyNamingStrategy({ type: PropertyNamingStrategyType.DISPLAY }),
 };
@@ -81,7 +84,7 @@ const generateStringEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions
   }
 
   if (options) {
-    options = Object.assign(defaultOptions, options);
+    options = Object.assign({...defaultOptions}, options);
   } else {
     options = defaultOptions;
   }
@@ -93,7 +96,7 @@ const generateStringEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions
 
   const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy, vs.expansion.contains);
 
-  return toTypeScriptString(enumDef, properties);
+  return toTypeScriptString(enumDef, properties, options.includeExportKeyword);
 }
 
 export default generateStringEnum;

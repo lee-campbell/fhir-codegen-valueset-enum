@@ -1,0 +1,15 @@
+{
+  "resourceType": "ValueSet",
+  "name": "EndToEnd",
+  "description": "Simple value set",
+  "status": "active",
+  "expansion": {
+    "timestamp": "2024-12-26T23:56:00.000Z",
+    "contains": [{
+      "inactive": true,
+      "code": "thi",
+      "system": "http://example.com",
+      "display": "Thing"
+    }]
+  }
+}
