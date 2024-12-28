@@ -27,5 +27,5 @@ describe('End-to-end test', () => {
       system: 'http://hl7.org/fhir/issue-severity',
       display: 'Fatal',
     });
-  }, 60000);
+  });
 });

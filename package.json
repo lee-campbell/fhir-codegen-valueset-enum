@@ -28,6 +28,7 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
+    "@rushstack/ts-command-line": "^4.23.2",
     "@types/fhir": "^0.0.41",
     "prettier": "^3.4.2"
   }

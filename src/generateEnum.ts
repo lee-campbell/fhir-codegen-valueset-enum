@@ -2,7 +2,7 @@ import PropertyNamingStrategy, { PropertyNamingStrategyType } from "./propertyNa
 import { ValueSet, ValueSetExpansionContains } from "./types";
 import EnumNamingStrategy, { EnumNamingStrategyType } from "./enumNamingStrategy";
 
-type EnumType = 'code' | 'Coding' | 'both';
+export type EnumType = 'code' | 'Coding' | 'both';
 
 type EnumDefinition = {
   name: string;
