@@ -1,9 +1,8 @@
 import { ValueSet } from "fhir/r5";
 import { describe, expect, it } from "vitest";
-import generateStringEnum from "../../src/stringEnumGenerator";
+import generateEnum from "../../src/generateEnum";
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import EnumNamingStrategy, { EnumNamingStrategyType } from "../../src/enumNamingStrategy";
 import PropertyNamingStrategy, { PropertyNamingStrategyType } from "../../src/propertyNamingStrategy";
 
 describe('stringEnumGenerator tests', () => {
@@ -16,7 +15,7 @@ describe('stringEnumGenerator tests', () => {
     };
 
     try {
-      generateStringEnum(vs);
+      generateEnum(vs);
     } catch (ex: any) {
       expect(ex.message).toEqual('The supplied ValueSet must contain an expansion in order to generate an enum of its values.');
     }
@@ -34,7 +33,7 @@ describe('stringEnumGenerator tests', () => {
     };
 
     try {
-      generateStringEnum(vs);
+      generateEnum(vs);
     } catch (ex: any) {
       expect(ex.message).toEqual('The supplied ValueSet must contain an expansion in order to generate an enum of its values.');
     }
@@ -58,7 +57,7 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'simpleValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs);
+    const result = generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
@@ -86,7 +85,7 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'nestedValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs);
+    const result = generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
@@ -110,7 +109,7 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'deprecatedValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs);
+    const result = generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
@@ -138,15 +137,15 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'abstractValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs);
+    const result = generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which there are no comments.', () => {
+  it('Returns the expected value for a ValueSet in which there is not description/display.', () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
-      name: 'NoComment',
+      name: 'NoDescription',
       status: 'active',
       expansion: {
         timestamp: new Date().toISOString(),
@@ -157,9 +156,9 @@ describe('stringEnumGenerator tests', () => {
       },
     };
 
-    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'noCommentValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'noDescriptionValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs, {
+    const result = generateEnum(vs, {
       propertyNamingStrategy: new PropertyNamingStrategy({
         type: PropertyNamingStrategyType.CODE,
       })
@@ -186,7 +185,30 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'exportedValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
-    const result = generateStringEnum(vs, { includeExportKeyword: true });
+    const result = generateEnum(vs, { includeExportKeyword: true });
+
+    expect(result.replace(/\s/g, '')).toEqual(expectedValue);
+  });
+
+  it('Produces a "Coding" enum.', () => {
+    const vs: ValueSet = {
+      resourceType: 'ValueSet',
+      name: 'MyValueSet',
+      description: 'My Value Set',
+      status: 'active',
+      expansion: {
+        timestamp: new Date().toISOString(),
+        contains: [{
+          code: 'thi',
+          system: 'http://example.com',
+          display: 'Thing',
+        }],
+      },
+    };
+
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'codingValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
+
+    const result = generateEnum(vs, { includeExportKeyword: true, enumType: 'Coding' });
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });

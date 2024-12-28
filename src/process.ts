@@ -1,5 +1,5 @@
 import * as prettier from 'prettier';
-import generateStringEnum, { EnumGeneratorOptions } from "./stringEnumGenerator";
+import generateEnum, { EnumGeneratorOptions } from "./generateEnum";
 import globProcessor from "./preprocessor/globProcessor";
 import bufferProcessor from "./preprocessor/bufferProcessor";
 import deserialise from "./deserialise";
@@ -23,7 +23,7 @@ const processInput = async (input: string, options: ProcessingOptions): Promise<
   const valueSets = deserialise(input);
 
   for (const v of valueSets) {
-    const generatedEnum = generateStringEnum(v, options);
+    const generatedEnum = generateEnum(v, options);
     const formattedEnum = await prettier.format(generatedEnum, { parser: 'babel-ts' });
 
     if (options.outputDirectory) {

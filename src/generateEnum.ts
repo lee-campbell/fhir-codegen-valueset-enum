@@ -2,9 +2,11 @@ import PropertyNamingStrategy, { PropertyNamingStrategyType } from "./propertyNa
 import { ValueSet, ValueSetExpansionContains } from "./types";
 import EnumNamingStrategy, { EnumNamingStrategyType } from "./enumNamingStrategy";
 
+type EnumType = 'code' | 'Coding';
+
 type EnumDefinition = {
   name: string;
-  comment?: string;
+  comment: string;
 }
 
 type PropertyDefinition = {
@@ -12,9 +14,11 @@ type PropertyDefinition = {
   value: string;
   comment?: string;
   deprecated?: boolean;
+  system?: string;
 };
 
 export type EnumGeneratorOptions = {
+  enumType: EnumType;
   includeExportKeyword?: boolean;
   enumNamingStrategy: EnumNamingStrategy;
   propertyNamingStrategy: PropertyNamingStrategy;
@@ -30,16 +34,52 @@ const getCommentString = (prop: PropertyDefinition): string => {
   return comment;
 };
 
-const toTypeScriptString = (
+const generateCodeEnum = (
   enumDef: EnumDefinition,
   properties: PropertyDefinition[],
   includeExportKeyword: boolean,
 ): string => {
-  let value = `${enumDef.comment ? `/** ${enumDef.comment} */\n` : ''}${includeExportKeyword ? 'export ' : ''}enum ${enumDef.name} {\n`;
+  let value = `/** ${enumDef.comment} */\n${includeExportKeyword ? 'export ' : ''}enum ${enumDef.name} {\n`;
   value += properties.map(p => `  ${getCommentString(p)}${p.name}= '${p.value}',`).join('\n');
   value += '}\n';
   return value;
-}
+};
+
+const generateCodingEnum = (
+  enumDef: EnumDefinition,
+  propertyDefinitions: PropertyDefinition[],
+  includeExportKeyword: boolean,
+): string => {
+  const codingEnumName = `${enumDef.name}Coding`;
+  let value = `/** ${enumDef.comment} (Coding) */\n`;
+  value += `const ${codingEnumName} = {\n`;
+
+  propertyDefinitions.forEach(p => {
+    let propString = `${getCommentString(p)}`;
+    propString += `${p.name}: {\n`;
+    propString += `code: '${p.value}',\n`;
+
+    if (p.system) {
+      propString += `system: '${p.system}',\n`;
+    }
+
+    if (p.comment) {
+      propString += `display: '${p.comment}',\n`;
+    }
+
+    propString += '},\n';
+
+    value += propString;
+  });
+
+  value += '} as const;\n'
+
+  if (includeExportKeyword) {
+    value += `export { ${codingEnumName} };\n`;
+  }
+  
+  return value;
+};
 
 const getPropertyDefintionsFromContains = (
   definitions: PropertyDefinition[] = [],
@@ -53,6 +93,7 @@ const getPropertyDefintionsFromContains = (
         name: namingStrategy.getName(c, parent),
         comment: c.display,
         value: c.code,
+        system: c.system,
         // @ts-ignore
         deprecated: c.inactive,
       };
@@ -69,6 +110,7 @@ const getPropertyDefintionsFromContains = (
 };
 
 const defaultOptions: EnumGeneratorOptions = {
+  enumType: 'code',
   includeExportKeyword: false,
   enumNamingStrategy: new EnumNamingStrategy({ type: EnumNamingStrategyType.SIMPLE }),
   propertyNamingStrategy: new PropertyNamingStrategy({ type: PropertyNamingStrategyType.DISPLAY }),
@@ -78,7 +120,7 @@ const defaultOptions: EnumGeneratorOptions = {
  * Creates a string representation of the TypeScript enum.
  * @param vs The expanded ValueSet from which the enum is to be generated.
  */
-const generateStringEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): string => {
+const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): string => {
   if (!vs.expansion || !vs.expansion.contains) {
     throw new Error('The supplied ValueSet must contain an expansion in order to generate an enum of its values.');
   }
@@ -91,12 +133,18 @@ const generateStringEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions
 
   const enumDef: EnumDefinition = {
     name: options.enumNamingStrategy.getName(vs),
-    comment: vs.description,
+    comment: vs.description || vs.name,
   };
 
   const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy, vs.expansion.contains);
 
-  return toTypeScriptString(enumDef, properties, options.includeExportKeyword);
+  let retVal = generateCodeEnum(enumDef, properties, options.includeExportKeyword);
+
+  if (options.enumType === 'Coding') {
+    retVal += '\n' + generateCodingEnum(enumDef, properties, options.includeExportKeyword);
+  }
+
+  return retVal;
 }
 
-export default generateStringEnum;
+export default generateEnum;

@@ -1,3 +1,0 @@
-enum NoComment {
-  THI = 'THI',
-}

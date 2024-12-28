@@ -16,10 +16,16 @@ describe('End-to-end test', () => {
       url: 'https://tx.fhir.org/r5/ValueSet/issue-severity/$expand?_format=json',
       outputDirectory,
       includeExportKeyword: true,
+      enumType: 'Coding',
     });
 
-    const { IssueSeverity } = await import(join(outputDirectory, 'IssueSeverity'));
+    const { IssueSeverity, IssueSeverityCoding } = await import(join(outputDirectory, 'IssueSeverity'));
 
     expect(IssueSeverity.FATAL).toEqual('fatal');
-  });
+    expect(IssueSeverityCoding.FATAL).toEqual({
+      code: 'fatal',
+      system: 'http://hl7.org/fhir/issue-severity',
+      display: 'Fatal',
+    });
+  }, 60000);
 });
