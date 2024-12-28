@@ -2,7 +2,7 @@ import PropertyNamingStrategy, { PropertyNamingStrategyType } from "./propertyNa
 import { ValueSet, ValueSetExpansionContains } from "./types";
 import EnumNamingStrategy, { EnumNamingStrategyType } from "./enumNamingStrategy";
 
-type EnumType = 'code' | 'Coding';
+type EnumType = 'code' | 'Coding' | 'both';
 
 type EnumDefinition = {
   name: string;
@@ -138,10 +138,15 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
 
   const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy, vs.expansion.contains);
 
-  let retVal = generateCodeEnum(enumDef, properties, options.includeExportKeyword);
+  let retVal = '';
 
-  if (options.enumType === 'Coding') {
-    retVal += '\n' + generateCodingEnum(enumDef, properties, options.includeExportKeyword);
+  if (options.enumType === 'both' || options.enumType === 'code') {
+    retVal += generateCodeEnum(enumDef, properties, options.includeExportKeyword);
+  }
+
+  if (options.enumType === 'both' || options.enumType === 'Coding') {
+    if (retVal) retVal += '\n';
+    retVal += generateCodingEnum(enumDef, properties, options.includeExportKeyword);
   }
 
   return retVal;

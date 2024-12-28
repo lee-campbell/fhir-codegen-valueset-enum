@@ -190,7 +190,7 @@ describe('stringEnumGenerator tests', () => {
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Produces a "Coding" enum.', () => {
+  it('Produces both a "code" and a "Coding" enum.', () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'MyValueSet',
@@ -206,9 +206,32 @@ describe('stringEnumGenerator tests', () => {
       },
     };
 
-    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'codingValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'codingOnlyValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
 
     const result = generateEnum(vs, { includeExportKeyword: true, enumType: 'Coding' });
+
+    expect(result.replace(/\s/g, '')).toEqual(expectedValue);
+  });
+
+  it('Produces both a "code" and a "Coding" enum.', () => {
+    const vs: ValueSet = {
+      resourceType: 'ValueSet',
+      name: 'MyValueSet',
+      description: 'My Value Set',
+      status: 'active',
+      expansion: {
+        timestamp: new Date().toISOString(),
+        contains: [{
+          code: 'thi',
+          system: 'http://example.com',
+          display: 'Thing',
+        }],
+      },
+    };
+
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'bothValueSetEnum.ts'), 'utf-8').replace(/\s/g, '');
+
+    const result = generateEnum(vs, { includeExportKeyword: true, enumType: 'both' });
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });

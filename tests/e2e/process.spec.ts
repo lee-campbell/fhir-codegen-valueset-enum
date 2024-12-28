@@ -16,7 +16,7 @@ describe('End-to-end test', () => {
       url: 'https://tx.fhir.org/r5/ValueSet/issue-severity/$expand?_format=json',
       outputDirectory,
       includeExportKeyword: true,
-      enumType: 'Coding',
+      enumType: 'both',
     });
 
     const { IssueSeverity, IssueSeverityCoding } = await import(join(outputDirectory, 'IssueSeverity'));
