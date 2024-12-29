@@ -24,6 +24,16 @@ describe('urlProcessor tests', () => {
     }
   });
 
+  it('Throws an error when the URL cannot be reached.', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('ENOTFOUND'));
+
+    try {
+      await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
+    } catch (ex: any) {
+      expect(ex.message).toEqual('Unable to make request to URL: "http://example.com/ValueSet/1234/$expand"');
+    }
+  });
+
   it('Throws an error when the response is not OK.', async () => {
     expect.assertions(1);
     
@@ -35,6 +45,24 @@ describe('urlProcessor tests', () => {
       await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
     } catch (ex: any) {
       expect(ex.message).toEqual(`The request to "http://example.com/ValueSet/1234/$expand" failed.`);
+    }
+  });
+
+  it('Throws an error when the returned data has no Content-Type.', async () => {
+    expect.assertions(1);
+    
+    const mockHeaders = new Headers();
+    
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      headers: mockHeaders,
+    });
+
+    try {
+      await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
+    } catch (ex: any) {
+      expect(ex.message).toEqual(`Content-Type "" is not supported. Supported content types are: application/fhir+json, application/json.
+    Hint: including the query string parameter "_format=json" will instruct some terminology servers to return JSON.`);
     }
   });
 
