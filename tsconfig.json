@@ -5,6 +5,10 @@
     "outDir": "dist",
     "sourceMap": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "strict": true
   }
 }

@@ -2,10 +2,10 @@ import { ValueSetExpansionContains } from "./types";
 import { sanitiseName } from "./utils";
 
 export enum PropertyNamingStrategyType {
-  CODE,
-  DISPLAY,
-  SYSTEMAWARE,
-  CUSTOM,
+  CODE = 'code',
+  DISPLAY = 'display',
+  SYSTEMAWARE = 'system_aware',
+  CUSTOM = 'custom',
 }
 
 type PropertyNamingStrategyFunction = (contains: ValueSetExpansionContains, parent?: ValueSetExpansionContains) => string;

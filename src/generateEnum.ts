@@ -92,7 +92,7 @@ const getPropertyDefintionsFromContains = (
       const def: PropertyDefinition = {
         name: namingStrategy.getName(c, parent),
         comment: c.display,
-        value: c.code,
+        value: c.code!,
         system: c.system,
         // @ts-ignore
         deprecated: c.inactive,
@@ -122,7 +122,7 @@ const defaultOptions: EnumGeneratorOptions = {
  */
 const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): string => {
   if (!vs.expansion || !vs.expansion.contains) {
-    throw new Error('The supplied ValueSet must contain an expansion in order to generate an enum of its values.');
+    throw new Error(`The supplied ValueSet must contain an expansion in order to generate an enum of its values.`);
   }
 
   if (options) {
@@ -132,21 +132,21 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
   }
 
   const enumDef: EnumDefinition = {
-    name: options.enumNamingStrategy.getName(vs),
-    comment: vs.description || vs.name,
+    name: options.enumNamingStrategy!.getName(vs),
+    comment: (vs.description || vs.name)!,
   };
 
-  const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy, vs.expansion.contains);
+  const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy!, vs.expansion.contains);
 
   let retVal = '';
 
   if (options.enumType === 'both' || options.enumType === 'code') {
-    retVal += generateCodeEnum(enumDef, properties, options.includeExportKeyword);
+    retVal += generateCodeEnum(enumDef, properties, options.includeExportKeyword!);
   }
 
   if (options.enumType === 'both' || options.enumType === 'Coding') {
     if (retVal) retVal += '\n';
-    retVal += generateCodingEnum(enumDef, properties, options.includeExportKeyword);
+    retVal += generateCodingEnum(enumDef, properties, options.includeExportKeyword!);
   }
 
   return retVal;

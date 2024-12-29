@@ -1,4 +1,4 @@
-import { Bundle, ValueSet } from "./types";
+import { Bundle, BundleEntry, ValueSet } from "./types";
 
 /**
  * Deserialises inbound data to an array of FHIR ValueSets.
@@ -11,7 +11,7 @@ import { Bundle, ValueSet } from "./types";
 const deserialise = (data: string, sourceName?: string): ValueSet[] => {
   const valueSets: ValueSet[] = [];
   
-  let parsedData: any;
+  let parsedData: ValueSet | Bundle<ValueSet>;
   try {
     parsedData = JSON.parse(data);
   } catch (ex) {
@@ -23,7 +23,10 @@ const deserialise = (data: string, sourceName?: string): ValueSet[] => {
       valueSets.push(parsedData);
       break;
     case 'Bundle':
-      const currentValueSets = parsedData.entry?.filter((e): e is ValueSet => e.resource?.resourceType === 'ValueSet').map(e => e.resource);
+      const currentValueSets = parsedData.entry
+        ?.filter((e): e is BundleEntry<ValueSet> => e.resource?.resourceType === 'ValueSet')
+        .map(e => e.resource)
+        .filter(e => !!e);
       if (!currentValueSets || currentValueSets.length < 1) {
         console.warn(`The source "${sourceName}" contains a Bundle that does not contain any ValueSet entries.`);
       } else {

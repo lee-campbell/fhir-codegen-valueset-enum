@@ -53,13 +53,19 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
     throw new Error(`Unable to parse the supplied URL "${url.toString()}"`);
   }
 
-  const response = await fetch(url);
+  let response: Response;
+
+  try {
+    response = await fetch(url);
+  } catch (ex) {
+    throw new Error(`Unable to make request to URL: "${url.toString()}"`, { cause: ex });
+  }
 
   if (!response.ok) {
     throw new Error(`The request to "${url.toString()}" failed.`, { cause: response });
   }
 
-  const contentType = response.headers.get('Content-Type');
+  const contentType = response.headers.get('Content-Type') || '';
 
   if (!permittedContentTypes.includes(contentType)) {
     throw new Error(`Content-Type "${contentType}" is not supported. Supported content types are: ${permittedContentTypes.join(', ')}.
@@ -82,7 +88,7 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
   const bundle = data as Bundle<ValueSet>;
 
   const valueSetEntries = bundle.entry
-    ?.filter(e => e.resource.resourceType === 'ValueSet')
+    ?.filter(e => e.resource?.resourceType === 'ValueSet')
     || [] as BundleEntry<ValueSet>[];
 
   if (!valueSetEntries.length) {
@@ -91,7 +97,7 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
   
   for (const v of valueSetEntries) {
     // get the expanded ValueSet...
-    if (!v.resource.expansion) {
+    if (!v.resource?.expansion) {
       await urlProcessor({
         url: `${v.fullUrl}/$expand`,
         followLinks: options.followLinks,

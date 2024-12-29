@@ -3,7 +3,7 @@
  * @param name The string to sanitise.
  * @returns The sanitised string.
  */
-const sanitiseName = (name: string): string => {
+const sanitiseName = (name?: string): string => {
   let sanitised = '';
   if (name) {
     sanitised = name.replace(/[^\w$]/g, '_');

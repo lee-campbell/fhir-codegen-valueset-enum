@@ -2,7 +2,14 @@
   "name": "fhir-codegen-valueset-enum",
   "version": "0.0.0",
   "description": "Code generator to create TypeScript enums from FHIR ValueSets",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "exports": {
+    "cli": "dist/run.js"
+  },
+  "bin": {
+    "fhir-enum": "dist/run.js"
+  },
+  "type": "commonjs",
   "private": true,
   "scripts": {
     "test": "vitest --coverage",
