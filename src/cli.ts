@@ -89,15 +89,28 @@ class TypeScriptEnumGeneratorAction extends CommandLineAction {
       // @ts-ignore
       type: this._propertyNamingStrategy.value,
     });
+
+    const inputFilePattern = this._inputFilePattern.value;
+    const url = this._inputUrl.value;
+
+    if (!inputFilePattern && !url) {
+      throw new Error('At least one of --input-file or --url must be supplied.');
+    }
+
+    const followLinks = this._followLinks.value;
+
+    if (followLinks && !url) {
+      console.warn('The --follow-links flag is only honoured when --url is supplied.');
+    }
     
     await processInputs({
-      url: this._inputUrl.value,
-      inputFilePattern: this._inputFilePattern.value,
+      url,
+      inputFilePattern,
       enumNamingStrategy,
       propertyNamingStrategy,
       // @ts-ignore
       enumType: this._enumType.value,
-      followLinks: this._followLinks.value,
+      followLinks,
       includeExportKeyword: this._includeExportKeyword.value,
       outputDirectory: this._outputDirectory.value,
     });
