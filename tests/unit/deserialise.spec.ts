@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
-import deserialise from "../../src/deserialise";
-import { Bundle, ValueSet, ValueSetCompose } from "fhir/r5";
+import { type Bundle, type ValueSet, ValueSetCompose } from 'fhir/r5';
+import { describe, expect, it } from 'vitest';
+import deserialise from '../../src/deserialise';
 
 describe('deserialise tests', () => {
   it('Throws an error when the supplied data is not JSON', () => {
@@ -19,7 +19,9 @@ describe('deserialise tests', () => {
     try {
       deserialise('{"prop": "value"}');
     } catch (ex: any) {
-      expect(ex.message).toEqual('The source ("undefined") does not contain appropriate FHIR JSON. Only ValueSet and Bundle types containing ValueSets are supported.');
+      expect(ex.message).toEqual(
+        'The source ("undefined") does not contain appropriate FHIR JSON. Only ValueSet and Bundle types containing ValueSets are supported.',
+      );
     }
   });
 
@@ -29,7 +31,9 @@ describe('deserialise tests', () => {
     try {
       deserialise('{"resourceType": "Foo"}');
     } catch (ex: any) {
-      expect(ex.message).toEqual('The source ("undefined") does not contain appropriate FHIR JSON. Only ValueSet and Bundle types containing ValueSets are supported.');
+      expect(ex.message).toEqual(
+        'The source ("undefined") does not contain appropriate FHIR JSON. Only ValueSet and Bundle types containing ValueSets are supported.',
+      );
     }
   });
 
@@ -38,7 +42,7 @@ describe('deserialise tests', () => {
       resourceType: 'ValueSet',
       status: 'active',
     };
-    
+
     const result = deserialise(JSON.stringify(v));
     expect(result).toHaveLength(1);
     expect(result[0].resourceType).toEqual('ValueSet');
@@ -49,28 +53,31 @@ describe('deserialise tests', () => {
       resourceType: 'Bundle',
       type: 'collection',
       total: 2,
-      entry: [{
-        resource: {
-          resourceType: 'ValueSet',
-          id: '1',
-          status: 'active',
+      entry: [
+        {
+          resource: {
+            resourceType: 'ValueSet',
+            id: '1',
+            status: 'active',
+          },
         },
-      }, {
-        resource: {
-          resourceType: 'ValueSet',
-          id: '2',
-          status: 'active',
+        {
+          resource: {
+            resourceType: 'ValueSet',
+            id: '2',
+            status: 'active',
+          },
         },
-      }],
+      ],
     };
 
     const result = deserialise(JSON.stringify(b));
     expect(result).toHaveLength(2);
-    
-    const valueSet1 = result.find(v => v.id === '1');
+
+    const valueSet1 = result.find((v) => v.id === '1');
     expect(valueSet1).toBeDefined();
 
-    const valueSet2 = result.find(v => v.id === '2');
+    const valueSet2 = result.find((v) => v.id === '2');
     expect(valueSet2).toBeDefined();
   });
 

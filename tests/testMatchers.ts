@@ -7,14 +7,12 @@ expect.extend({
 
     if (pass) {
       return {
-        message: () =>
-          `"expected" and "received" match (ignoring whitespace).`,
+        message: () => `"expected" and "received" match (ignoring whitespace).`,
         pass: true,
       };
     } else {
       return {
-        message: () =>
-          `expected "${received}" to be equal to "${expected}" when ignoring whitespace`,
+        message: () => `expected "${received}" to be equal to "${expected}" when ignoring whitespace`,
         pass: false,
       };
     }

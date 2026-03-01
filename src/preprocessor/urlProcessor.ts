@@ -1,5 +1,5 @@
-import { Bundle, BundleEntry, ValueSet } from "../types";
-import InputDataProcessor from "./processor";
+import type { Bundle, BundleEntry, ValueSet } from '../types';
+import type InputDataProcessor from './processor';
 
 type UrlProcessorOptions = {
   url: string | URL;
@@ -18,20 +18,26 @@ const permittedResourceTypes = ['ValueSet', 'Bundle'];
 const getFhirBaseUrl = (fhirUrl: URL): URL => {
   let path = fhirUrl.pathname;
   path = path.replace(/\/$/, '');
-  
+
   // Split the pathname into segments
-  const pathSegments = path.split('/').filter(segment => segment).reverse();
+  const pathSegments = path
+    .split('/')
+    .filter((segment) => segment)
+    .reverse();
 
   // Identify the first FHIR resource or stop processing after known segments
-  const possibleResourceIndex = pathSegments.findIndex(segment =>
-    /^[A-Za-z]+$/.test(segment) // Matches resource types (e.g., Patient, ValueSet)
+  const possibleResourceIndex = pathSegments.findIndex(
+    (segment) => /^[A-Za-z]+$/.test(segment), // Matches resource types (e.g., Patient, ValueSet)
   );
 
   // Base URL includes all segments up to (but not including) the first resource type
-  const basePath = pathSegments.reverse().slice(0, pathSegments.length - 1 - possibleResourceIndex).join('/');
+  const basePath = pathSegments
+    .reverse()
+    .slice(0, pathSegments.length - 1 - possibleResourceIndex)
+    .join('/');
 
   return new URL(`${fhirUrl.origin}${basePath ? `/${basePath}` : ''}`);
-}
+};
 
 const getNextPageUrl = (originalUrl: URL, nextPageUrl: string): string => {
   const baseUrl = getFhirBaseUrl(originalUrl);
@@ -77,7 +83,7 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
   if (!permittedResourceTypes.includes(data.resourceType)) {
     throw new Error(
       `The returned resource must be one of the following types: ${permittedResourceTypes.join(', ')}. Received: ${data.resourceType}`,
-      { cause: data }
+      { cause: data },
     );
   }
 
@@ -87,34 +93,39 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
 
   const bundle = data as Bundle<ValueSet>;
 
-  const valueSetEntries = bundle.entry
-    ?.filter(e => e.resource?.resourceType === 'ValueSet')
-    || [] as BundleEntry<ValueSet>[];
+  const valueSetEntries =
+    bundle.entry?.filter((e) => e.resource?.resourceType === 'ValueSet') || ([] as BundleEntry<ValueSet>[]);
 
   if (!valueSetEntries.length) {
     console.warn(`Bundle returned from "${url.toString()}" does not contain any ValueSets.`);
   }
-  
+
   for (const v of valueSetEntries) {
     // get the expanded ValueSet...
     if (!v.resource?.expansion) {
-      await urlProcessor({
-        url: `${v.fullUrl}/$expand`,
-        followLinks: options.followLinks,
-      }, callback);
+      await urlProcessor(
+        {
+          url: `${v.fullUrl}/$expand`,
+          followLinks: options.followLinks,
+        },
+        callback,
+      );
     } else await callback(JSON.stringify(v.resource));
   }
 
   if (options.followLinks) {
-    const nextPage = bundle.link?.find(l => l.relation === 'next')?.url;
+    const nextPage = bundle.link?.find((l) => l.relation === 'next')?.url;
 
     if (nextPage) {
       // nextPage might be a relative URL. If so, we need to get the base URL from the supplied `options.url`:
       const nextPageUrl = getNextPageUrl(parsedUrl, nextPage);
-      await urlProcessor({
-        url: nextPageUrl,
-        followLinks: true,
-      }, callback);
+      await urlProcessor(
+        {
+          url: nextPageUrl,
+          followLinks: true,
+        },
+        callback,
+      );
     }
   }
 };

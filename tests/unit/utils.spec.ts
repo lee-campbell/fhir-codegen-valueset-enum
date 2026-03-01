@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { sanitiseName } from "../../src/utils";
+import { describe, expect, it } from 'vitest';
+import { sanitiseName } from '../../src/utils';
 
 describe('utils tests', () => {
   describe('sanitiseName function tests', () => {
@@ -16,6 +16,6 @@ describe('utils tests', () => {
     it('Correctly prepends strings with an underscore if they begin with a numeric character', () => {
       const result = sanitiseName('1234');
       expect(result).toEqual('_1234');
-    })
+    });
   });
 });

@@ -14,7 +14,9 @@
   "scripts": {
     "test": "vitest --coverage",
     "prebuild": "rimraf dist/",
-    "build": "tsc --project tsconfig.build.json"
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "biome check .",
+    "format": "biome check --write ."
   },
   "keywords": [
     "fhir",
@@ -27,6 +29,7 @@
   "author": "Lee Campbell <https://github.com/lee-campbell>",
   "license": "ISC",
   "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "^2.1.8",
     "rimraf": "^6.0.1",

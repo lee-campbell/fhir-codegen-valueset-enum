@@ -1,13 +1,13 @@
-import PropertyNamingStrategy, { PropertyNamingStrategyType } from "./propertyNamingStrategy";
-import { ValueSet, ValueSetExpansionContains } from "./types";
-import EnumNamingStrategy, { EnumNamingStrategyType } from "./enumNamingStrategy";
+import EnumNamingStrategy, { EnumNamingStrategyType } from './enumNamingStrategy';
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from './propertyNamingStrategy';
+import type { ValueSet, ValueSetExpansionContains } from './types';
 
 export type EnumType = 'code' | 'Coding' | 'both';
 
 type EnumDefinition = {
   name: string;
   comment: string;
-}
+};
 
 type PropertyDefinition = {
   name: string;
@@ -22,7 +22,7 @@ export type EnumGeneratorOptions = {
   includeExportKeyword?: boolean;
   enumNamingStrategy: EnumNamingStrategy;
   propertyNamingStrategy: PropertyNamingStrategy;
-}
+};
 
 const getCommentString = (prop: PropertyDefinition): string => {
   if (!prop.comment) return '';
@@ -40,7 +40,7 @@ const generateCodeEnum = (
   includeExportKeyword: boolean,
 ): string => {
   let value = `/** ${enumDef.comment} */\n${includeExportKeyword ? 'export ' : ''}enum ${enumDef.name} {\n`;
-  value += properties.map(p => `  ${getCommentString(p)}${p.name}= '${p.value}',`).join('\n');
+  value += properties.map((p) => `  ${getCommentString(p)}${p.name}= '${p.value}',`).join('\n');
   value += '}\n';
   return value;
 };
@@ -54,7 +54,7 @@ const generateCodingEnum = (
   let value = `/** ${enumDef.comment} (Coding) */\n`;
   value += `const ${codingEnumName} = {\n`;
 
-  propertyDefinitions.forEach(p => {
+  propertyDefinitions.forEach((p) => {
     let propString = `${getCommentString(p)}`;
     propString += `${p.name}: {\n`;
     propString += `code: '${p.value}',\n`;
@@ -72,12 +72,12 @@ const generateCodingEnum = (
     value += propString;
   });
 
-  value += '} as const;\n'
+  value += '} as const;\n';
 
   if (includeExportKeyword) {
     value += `export { ${codingEnumName} };\n`;
   }
-  
+
   return value;
 };
 
@@ -87,20 +87,20 @@ const getPropertyDefintionsFromContains = (
   contains: ValueSetExpansionContains[],
   parent?: ValueSetExpansionContains,
 ): PropertyDefinition[] => {
-  contains.forEach(c => {
+  contains.forEach((c) => {
     if (!c.abstract) {
       const def: PropertyDefinition = {
         name: namingStrategy.getName(c, parent),
         comment: c.display,
         value: c.code!,
         system: c.system,
-        // @ts-ignore
+        // @ts-expect-error
         deprecated: c.inactive,
       };
-      
+
       definitions.push(def);
     }
-    
+
     if (c.contains) {
       getPropertyDefintionsFromContains(definitions, namingStrategy, c.contains, c);
     }
@@ -126,7 +126,7 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
   }
 
   if (options) {
-    options = Object.assign({...defaultOptions}, options);
+    options = Object.assign({ ...defaultOptions }, options);
   } else {
     options = defaultOptions;
   }
@@ -150,6 +150,6 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
   }
 
   return retVal;
-}
+};
 
 export default generateEnum;

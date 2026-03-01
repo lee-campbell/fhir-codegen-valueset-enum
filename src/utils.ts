@@ -11,9 +11,7 @@ const sanitiseName = (name?: string): string => {
       sanitised = `_${sanitised}`;
     }
   }
-  return sanitised
-}
-
-export {
-  sanitiseName,
+  return sanitised;
 };
+
+export { sanitiseName };

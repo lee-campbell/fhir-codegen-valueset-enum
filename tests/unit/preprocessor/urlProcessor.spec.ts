@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import urlProcessor from "../../../src/preprocessor/urlProcessor";
-import { Bundle, OperationOutcome, ValueSet } from "fhir/r5";
+import type { Bundle, OperationOutcome, ValueSet } from 'fhir/r5';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import urlProcessor from '../../../src/preprocessor/urlProcessor';
 
 describe('urlProcessor tests', () => {
   const callback = vi.fn();
@@ -16,9 +16,12 @@ describe('urlProcessor tests', () => {
     expect.assertions(1);
 
     try {
-      await urlProcessor({
-        url: 'Not a URL',
-      }, callback);
+      await urlProcessor(
+        {
+          url: 'Not a URL',
+        },
+        callback,
+      );
     } catch (ex: any) {
       expect(ex.message).toEqual('Unable to parse the supplied URL "Not a URL"');
     }
@@ -36,7 +39,7 @@ describe('urlProcessor tests', () => {
 
   it('Throws an error when the response is not OK.', async () => {
     expect.assertions(1);
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: false,
     });
@@ -50,9 +53,9 @@ describe('urlProcessor tests', () => {
 
   it('Throws an error when the returned data has no Content-Type.', async () => {
     expect.assertions(1);
-    
+
     const mockHeaders = new Headers();
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
       headers: mockHeaders,
@@ -61,17 +64,19 @@ describe('urlProcessor tests', () => {
     try {
       await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
     } catch (ex: any) {
-      expect(ex.message).toEqual(`Content-Type "" is not supported. Supported content types are: application/fhir+json, application/json.
+      expect(
+        ex.message,
+      ).toEqual(`Content-Type "" is not supported. Supported content types are: application/fhir+json, application/json.
     Hint: including the query string parameter "_format=json" will instruct some terminology servers to return JSON.`);
     }
   });
 
   it('Throws an error when the returned data is not JSON.', async () => {
     expect.assertions(1);
-    
+
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'text/plain');
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
       headers: mockHeaders,
@@ -80,7 +85,9 @@ describe('urlProcessor tests', () => {
     try {
       await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
     } catch (ex: any) {
-      expect(ex.message).toEqual(`Content-Type "text/plain" is not supported. Supported content types are: application/fhir+json, application/json.
+      expect(
+        ex.message,
+      ).toEqual(`Content-Type "text/plain" is not supported. Supported content types are: application/fhir+json, application/json.
     Hint: including the query string parameter "_format=json" will instruct some terminology servers to return JSON.`);
     }
   });
@@ -90,7 +97,7 @@ describe('urlProcessor tests', () => {
 
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockData: OperationOutcome = {
       resourceType: 'OperationOutcome',
       issue: [],
@@ -105,14 +112,16 @@ describe('urlProcessor tests', () => {
     try {
       await urlProcessor({ url: 'http://example.com/ValueSet/1234/$expand' }, callback);
     } catch (ex: any) {
-      expect(ex.message).toEqual(`The returned resource must be one of the following types: ValueSet, Bundle. Received: OperationOutcome`);
+      expect(ex.message).toEqual(
+        `The returned resource must be one of the following types: ValueSet, Bundle. Received: OperationOutcome`,
+      );
     }
   });
 
   it('Calls the callback function with the retrieved ValueSet', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockData: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
@@ -132,7 +141,7 @@ describe('urlProcessor tests', () => {
   it('Gracefully handles Bundles that contain no ValueSets', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockData: Bundle = {
       resourceType: 'Bundle',
       type: 'searchset',
@@ -152,20 +161,22 @@ describe('urlProcessor tests', () => {
   it('Retrieves the expanded ValueSet when a Bundle is returned from the original request', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockValueSet: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
     };
-    
+
     const mockData: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 1,
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/1',
-        resource: mockValueSet,
-      }],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/1',
+          resource: mockValueSet,
+        },
+      ],
     };
 
     // Mock for the Bundle
@@ -190,7 +201,7 @@ describe('urlProcessor tests', () => {
   it('Retrieves the expanded ValueSet when a Bundle is returned from the original request', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockValueSet: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
@@ -198,15 +209,17 @@ describe('urlProcessor tests', () => {
         timestamp: new Date().toISOString(),
       },
     };
-    
+
     const mockData: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 1,
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/1',
-        resource: mockValueSet,
-      }],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/1',
+          resource: mockValueSet,
+        },
+      ],
     };
 
     // Mock for the Bundle
@@ -224,41 +237,47 @@ describe('urlProcessor tests', () => {
   it('Gets the next page of results, if there is a relative next page link in the Bundle', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockValueSet1: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
-      id: "1",
+      id: '1',
     };
 
     const mockValueSet2: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
-      id: "2",
+      id: '2',
     };
-    
+
     const mockData: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 2,
-      link: [{
-        relation: 'next',
-        url: 'ValueSet?offset=1&_count=1'
-      }],
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/1',
-        resource: mockValueSet1,
-      }],
+      link: [
+        {
+          relation: 'next',
+          url: 'ValueSet?offset=1&_count=1',
+        },
+      ],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/1',
+          resource: mockValueSet1,
+        },
+      ],
     };
 
     const mockNextPage: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 2,
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/2',
-        resource: mockValueSet2,
-      }],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/2',
+          resource: mockValueSet2,
+        },
+      ],
     };
 
     // Mock for the Bundle
@@ -301,41 +320,47 @@ describe('urlProcessor tests', () => {
   it('Gets the next page of results, if there is an absolute next page link in the Bundle', async () => {
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const mockValueSet1: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
-      id: "1",
+      id: '1',
     };
 
     const mockValueSet2: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
-      id: "2",
+      id: '2',
     };
-    
+
     const mockData: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 2,
-      link: [{
-        relation: 'next',
-        url: 'http://example.com/ValueSet?offset=1&_count=1'
-      }],
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/1',
-        resource: mockValueSet1,
-      }],
+      link: [
+        {
+          relation: 'next',
+          url: 'http://example.com/ValueSet?offset=1&_count=1',
+        },
+      ],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/1',
+          resource: mockValueSet1,
+        },
+      ],
     };
 
     const mockNextPage: Bundle<ValueSet> = {
       resourceType: 'Bundle',
       type: 'searchset',
       total: 2,
-      entry: [{
-        fullUrl: 'http://example.com/ValueSet/2',
-        resource: mockValueSet2,
-      }],
+      entry: [
+        {
+          fullUrl: 'http://example.com/ValueSet/2',
+          resource: mockValueSet2,
+        },
+      ],
     };
 
     // Mock for the Bundle

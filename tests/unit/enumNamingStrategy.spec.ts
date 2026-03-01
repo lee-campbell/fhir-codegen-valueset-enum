@@ -1,6 +1,6 @@
+import type { ValueSet } from 'fhir/r5';
 import { describe, expect, it } from 'vitest';
 import EnumNamingStrategy, { EnumNamingStrategyType } from '../../src/enumNamingStrategy';
-import { ValueSet } from 'fhir/r5';
 
 describe('enumNamingStrategy tests', () => {
   it('Throws an error when an invalid naming strategy type is supplied.', () => {
@@ -8,11 +8,11 @@ describe('enumNamingStrategy tests', () => {
 
     try {
       new EnumNamingStrategy({
-        // @ts-ignore
+        // @ts-expect-error
         type: 'FOO',
-      })  
+      });
     } catch (ex: any) {
-      expect(ex.message).toEqual('EnumNamingStrategyType "FOO" is not recognised.')
+      expect(ex.message).toEqual('EnumNamingStrategyType "FOO" is not recognised.');
     }
   });
 
@@ -34,23 +34,25 @@ describe('enumNamingStrategy tests', () => {
 
   it('Throws an error when the custom naming strategy type is specified, but no naming strategy function is supplied.', () => {
     expect.assertions(1);
-    
+
     try {
       new EnumNamingStrategy({
         type: EnumNamingStrategyType.CUSTOM,
-      })
+      });
     } catch (ex: any) {
-      expect(ex.message).toEqual('A customEnumNamingStrategy function must be supplied when specifying the type "CUSTOM".');
+      expect(ex.message).toEqual(
+        'A customEnumNamingStrategy function must be supplied when specifying the type "CUSTOM".',
+      );
     }
   });
 
   it('Throws an error when the custom naming strategy type is specified, a non-function type is supplied.', () => {
     expect.assertions(1);
-    
+
     try {
       new EnumNamingStrategy({
         type: EnumNamingStrategyType.CUSTOM,
-        // @ts-ignore
+        // @ts-expect-error
         customEnumNamingStrategy: 'func',
       });
     } catch (ex: any) {
@@ -126,7 +128,7 @@ describe('enumNamingStrategy tests', () => {
       type: EnumNamingStrategyType.CUSTOM,
       customEnumNamingStrategy: (vs) => `${vs.name}ValueSetEnum`,
     });
-    
+
     const valueSet: ValueSet = {
       resourceType: 'ValueSet',
       name: 'MyValueSet',

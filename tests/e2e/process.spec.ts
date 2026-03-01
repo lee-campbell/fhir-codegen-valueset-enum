@@ -1,9 +1,9 @@
-import { existsSync, rmdirSync } from "node:fs";
-import { beforeEach, describe, expect, it } from "vitest";
-import processInputs from "../../src/process";
-import { join } from "node:path";
+import { existsSync, rmdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { beforeEach, describe, expect, it } from 'vitest';
+import processInputs from '../../src/process';
 
-const outputDirectory = join(__dirname, '__outputs__' );
+const outputDirectory = join(__dirname, '__outputs__');
 
 describe('End-to-end test', () => {
   beforeEach(() => {

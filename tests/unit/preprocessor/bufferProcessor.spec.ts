@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import bufferProcessor from "../../../src/preprocessor/bufferProcessor";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import bufferProcessor from '../../../src/preprocessor/bufferProcessor';
 
 describe('bufferProcessor tests', () => {
   const callback = vi.fn();
-  
+
   beforeEach(() => {
     callback.mockClear();
   });

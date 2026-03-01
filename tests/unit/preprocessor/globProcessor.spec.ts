@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import globProcessor from "../../../src/preprocessor/globProcessor";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import globProcessor from '../../../src/preprocessor/globProcessor';
 
 describe('globProcessor tests', () => {
   const callback = vi.fn();
@@ -13,9 +13,15 @@ describe('globProcessor tests', () => {
 
     expect(callback).toHaveBeenCalledTimes(2);
 
-    // @ts-ignore
-    expect(callback).toHaveBeenNthCalledWith(1, expect.stringEqualIgnoringWhitespace('{"resourceType":"ValueSet","id":"1"}'));
-    // @ts-ignore
-    expect(callback).toHaveBeenNthCalledWith(2, expect.stringEqualIgnoringWhitespace('{"resourceType":"ValueSet","id":"2"}'));
+    // @ts-expect-error
+    expect(callback).toHaveBeenNthCalledWith(
+      1,
+      expect.stringEqualIgnoringWhitespace('{"resourceType":"ValueSet","id":"1"}'),
+    );
+    // @ts-expect-error
+    expect(callback).toHaveBeenNthCalledWith(
+      2,
+      expect.stringEqualIgnoringWhitespace('{"resourceType":"ValueSet","id":"2"}'),
+    );
   });
 });

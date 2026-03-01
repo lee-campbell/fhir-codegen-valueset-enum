@@ -1,5 +1,5 @@
-import { ValueSetExpansionContains } from "./types";
-import { sanitiseName } from "./utils";
+import type { ValueSetExpansionContains } from './types';
+import { sanitiseName } from './utils';
 
 export enum PropertyNamingStrategyType {
   CODE = 'code',
@@ -8,7 +8,10 @@ export enum PropertyNamingStrategyType {
   CUSTOM = 'custom',
 }
 
-type PropertyNamingStrategyFunction = (contains: ValueSetExpansionContains, parent?: ValueSetExpansionContains) => string;
+type PropertyNamingStrategyFunction = (
+  contains: ValueSetExpansionContains,
+  parent?: ValueSetExpansionContains,
+) => string;
 
 const codePropertyNamingStrategy: PropertyNamingStrategyFunction = (contains, parent) => {
   let name = sanitiseName(contains.code?.toUpperCase());
@@ -37,13 +40,13 @@ const systemAwarePropertyNamingStrategy: PropertyNamingStrategyFunction = (conta
 type PropertyNamingStrategyOptions = {
   type: PropertyNamingStrategyType;
   customPropertyNamingStrategy?: PropertyNamingStrategyFunction;
-}
+};
 
 export default class PropertyNamingStrategy {
   public getName: PropertyNamingStrategyFunction;
 
   constructor(options: PropertyNamingStrategyOptions) {
-    switch(options.type) {
+    switch (options.type) {
       case PropertyNamingStrategyType.CODE:
         this.getName = codePropertyNamingStrategy;
         break;
@@ -55,13 +58,15 @@ export default class PropertyNamingStrategy {
         break;
       case PropertyNamingStrategyType.CUSTOM:
         if (!options.customPropertyNamingStrategy) {
-          throw new Error('A customPropertyNamingStrategy function must be supplied when specifying the type "CUSTOM".');
+          throw new Error(
+            'A customPropertyNamingStrategy function must be supplied when specifying the type "CUSTOM".',
+          );
         }
 
-        if(typeof options.customPropertyNamingStrategy !== 'function') {
+        if (typeof options.customPropertyNamingStrategy !== 'function') {
           throw new Error('The suppled customPropertyNamingStrategy must be a function.');
         }
-        
+
         this.getName = options.customPropertyNamingStrategy;
         break;
       default:

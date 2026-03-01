@@ -1,17 +1,17 @@
-import { describe, expect, it } from "vitest";
-import PropertyNamingStrategy, { PropertyNamingStrategyType } from "../../src/propertyNamingStrategy";
-import { ValueSetExpansionContains } from "fhir/r5";
+import type { ValueSetExpansionContains } from 'fhir/r5';
+import { describe, expect, it } from 'vitest';
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../src/propertyNamingStrategy';
 
 describe('propertyNamingStrategy tests', () => {
   it('Throws an error when an invalid property naming strategy is supplied', () => {
     expect.assertions(1);
     try {
       new PropertyNamingStrategy({
-        // @ts-ignore
-        type: 'FOO'
+        // @ts-expect-error
+        type: 'FOO',
       });
     } catch (ex: any) {
-      expect(ex.message).toEqual('PropertyNamingStrategyType "FOO" is not recognised.')
+      expect(ex.message).toEqual('PropertyNamingStrategyType "FOO" is not recognised.');
     }
   });
 
@@ -41,23 +41,25 @@ describe('propertyNamingStrategy tests', () => {
 
   it('Throws an error when the custom naming strategy type is specified, but no naming strategy function is supplied.', () => {
     expect.assertions(1);
-    
+
     try {
       new PropertyNamingStrategy({
         type: PropertyNamingStrategyType.CUSTOM,
-      })
+      });
     } catch (ex: any) {
-      expect(ex.message).toEqual('A customPropertyNamingStrategy function must be supplied when specifying the type "CUSTOM".');
+      expect(ex.message).toEqual(
+        'A customPropertyNamingStrategy function must be supplied when specifying the type "CUSTOM".',
+      );
     }
   });
-  
+
   it('Throws an error when the custom naming strategy type is specified, a non-function type is supplied.', () => {
     expect.assertions(1);
-    
+
     try {
       new PropertyNamingStrategy({
         type: PropertyNamingStrategyType.CUSTOM,
-        // @ts-ignore
+        // @ts-expect-error
         customPropertyNamingStrategy: 'func',
       });
     } catch (ex: any) {

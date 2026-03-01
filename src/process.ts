@@ -1,10 +1,10 @@
-import * as prettier from 'prettier';
-import generateEnum, { EnumGeneratorOptions } from "./generateEnum";
-import globProcessor from "./preprocessor/globProcessor";
-import bufferProcessor from "./preprocessor/bufferProcessor";
-import deserialise from "./deserialise";
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import * as prettier from 'prettier';
+import deserialise from './deserialise';
+import generateEnum, { type EnumGeneratorOptions } from './generateEnum';
+import bufferProcessor from './preprocessor/bufferProcessor';
+import globProcessor from './preprocessor/globProcessor';
 import urlProcessor from './preprocessor/urlProcessor';
 
 type ProcessingOptions = Partial<EnumGeneratorOptions> & {
@@ -24,7 +24,7 @@ const processInput = async (input: string, options: ProcessingOptions): Promise<
 
   for (const v of valueSets) {
     const generatedEnum = generateEnum(v, options);
-    const formattedEnum = await prettier.format(generatedEnum, { parser: 'babel-ts' });
+    const formattedEnum = await prettier.format(generatedEnum, { parser: 'babel-ts', singleQuote: true });
 
     if (options.outputDirectory) {
       const outputPath = join(options.outputDirectory, `${v.name}.ts`);
@@ -33,32 +33,29 @@ const processInput = async (input: string, options: ProcessingOptions): Promise<
       console.log(formattedEnum);
     }
   }
-}
+};
 
 const processInputs = async (options: ProcessingOptions): Promise<void> => {
   if (options.outputDirectory) {
-    await mkdir(options.outputDirectory, { recursive : true });
+    await mkdir(options.outputDirectory, { recursive: true });
   }
 
   if (options.inputFilePattern) {
-    await globProcessor(
-      { filePattern: options.inputFilePattern },
-      async (data) => { await processInput(data, options); },
-    );
+    await globProcessor({ filePattern: options.inputFilePattern }, async (data) => {
+      await processInput(data, options);
+    });
   }
 
   if (options.inputData) {
-    await bufferProcessor(
-      { data: options.inputData },
-      async (data) => { await processInput(data, options) },
-    );
+    await bufferProcessor({ data: options.inputData }, async (data) => {
+      await processInput(data, options);
+    });
   }
 
   if (options.url) {
-    await urlProcessor(
-      { url: options.url, followLinks: options.followLinks },
-      async (data) => { await processInput(data, options) },
-    )
+    await urlProcessor({ url: options.url, followLinks: options.followLinks }, async (data) => {
+      await processInput(data, options);
+    });
   }
 };
 

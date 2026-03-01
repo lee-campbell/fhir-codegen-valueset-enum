@@ -1,9 +1,9 @@
-import { glob, readFile } from "node:fs/promises";
-import InputDataProcessor from "./processor";
+import { glob, readFile } from 'node:fs/promises';
+import type InputDataProcessor from './processor';
 
 type GlobProcessorOptions = {
   filePattern: string;
-}
+};
 
 /**
  * Data pre-processor to read file contents and convert them to strings.
@@ -12,11 +12,11 @@ type GlobProcessorOptions = {
  */
 const globProcessor: InputDataProcessor = async (options: GlobProcessorOptions, callback) => {
   const { filePattern } = options;
-  
+
   for await (const match of glob(filePattern)) {
     const fileContents = await readFile(match, 'utf-8');
     await callback(fileContents);
   }
-}
+};
 
 export default globProcessor;

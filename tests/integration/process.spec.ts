@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import processInputs from "../../src/process";
-import { ValueSet } from "fhir/r5";
-import { existsSync, readFileSync, rmdirSync } from "fs";
-import { join } from "path";
+import type { ValueSet } from 'fhir/r5';
+import { existsSync, readFileSync, rmdirSync } from 'fs';
+import { join } from 'path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import processInputs from '../../src/process';
 
 const outputDirectory = join(__dirname, '__outputs__');
 
@@ -11,7 +11,7 @@ describe('process tests', () => {
 
   beforeEach(() => {
     logSpy.mockClear();
-    
+
     if (existsSync(outputDirectory)) {
       rmdirSync(outputDirectory, { recursive: true });
     }
@@ -25,12 +25,14 @@ describe('process tests', () => {
       status: 'active',
       expansion: {
         timestamp: new Date().toISOString(),
-        contains: [{
-          inactive: true,
-          code: 'thi',
-          system: 'http://example.com',
-          display: 'Thing',
-        }],
+        contains: [
+          {
+            inactive: true,
+            code: 'thi',
+            system: 'http://example.com',
+            display: 'Thing',
+          },
+        ],
       },
     };
 
@@ -55,19 +57,21 @@ describe('process tests', () => {
       status: 'active',
       expansion: {
         timestamp: new Date().toISOString(),
-        contains: [{
-          inactive: true,
-          code: 'thi',
-          system: 'http://example.com',
-          display: 'Thing',
-        }],
+        contains: [
+          {
+            inactive: true,
+            code: 'thi',
+            system: 'http://example.com',
+            display: 'Thing',
+          },
+        ],
       },
     };
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'simpleValueSetEnum.ts'), 'utf-8');
 
-    await processInputs({ inputData: JSON.stringify(v), outputDirectory, });
-    
+    await processInputs({ inputData: JSON.stringify(v), outputDirectory });
+
     const outputValue = readFileSync(join(outputDirectory, 'EndToEnd.ts'), 'utf-8');
 
     expect(outputValue).toEqual(expectedValue);
@@ -76,10 +80,10 @@ describe('process tests', () => {
   it('Prints a prettified enum based upon the supplied URL.', async () => {
     const mockFetch = vi.fn();
     global.fetch = mockFetch;
-    
+
     const mockHeaders = new Headers();
     mockHeaders.set('Content-Type', 'application/fhir+json');
-    
+
     const v: ValueSet = {
       resourceType: 'ValueSet',
       name: 'EndToEnd',
@@ -87,12 +91,14 @@ describe('process tests', () => {
       status: 'active',
       expansion: {
         timestamp: new Date().toISOString(),
-        contains: [{
-          inactive: true,
-          code: 'thi',
-          system: 'http://example.com',
-          display: 'Thing',
-        }],
+        contains: [
+          {
+            inactive: true,
+            code: 'thi',
+            system: 'http://example.com',
+            display: 'Thing',
+          },
+        ],
       },
     };
 

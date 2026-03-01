@@ -1,5 +1,5 @@
-import { ValueSet } from "./types";
-import { sanitiseName } from "./utils";
+import type { ValueSet } from './types';
+import { sanitiseName } from './utils';
 
 /**
  * Enum for selecting the naming strategy type.
@@ -49,7 +49,7 @@ const versionAwareEnumNamingStrategy: EnumNamingStrategyFunction = (vs) => {
  * "version aware" strategy are provided, and can be selected using the "type" enum. Alternatively,
  * users can provide their own naming strategy, by selecting the "custom" type enum and populating the
  * `customEnumNamingStrategy` property.
- * 
+ *
  * N.B. users are responsible for their own name sanitisation when providing a custom naming strategy.
  * If the ValueSet's name contains a character that cannot be used to name variables in TypeScript,
  * the generated enum will be invalid.
@@ -57,7 +57,7 @@ const versionAwareEnumNamingStrategy: EnumNamingStrategyFunction = (vs) => {
 type EnumNamingStrategyOptions = {
   type: EnumNamingStrategyType;
   customEnumNamingStrategy?: EnumNamingStrategyFunction;
-}
+};
 
 /**
  * ValueSet naming strategy class. A helper to derive the name of the enum created from the
@@ -65,9 +65,9 @@ type EnumNamingStrategyOptions = {
  */
 export default class EnumNamingStrategy {
   public getName: EnumNamingStrategyFunction;
-  
+
   constructor(options: EnumNamingStrategyOptions) {
-    switch(options.type) {
+    switch (options.type) {
       case EnumNamingStrategyType.SIMPLE:
         this.getName = simpleEnumNamingStrategy;
         break;
@@ -79,7 +79,7 @@ export default class EnumNamingStrategy {
           throw new Error('A customEnumNamingStrategy function must be supplied when specifying the type "CUSTOM".');
         }
 
-        if(typeof options.customEnumNamingStrategy !== 'function') {
+        if (typeof options.customEnumNamingStrategy !== 'function') {
           throw new Error('The suppled customEnumNamingStrategy must be a function.');
         }
 

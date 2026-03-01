@@ -1,8 +1,8 @@
-import InputDataProcessor from "./processor";
+import type InputDataProcessor from './processor';
 
 type BufferProcessorOptions = {
-  data: string | Buffer,
-}
+  data: string | Buffer;
+};
 
 /**
  * Data pre-processor to convert Buffers to string.
@@ -12,8 +12,8 @@ type BufferProcessorOptions = {
  */
 const bufferProcessor: InputDataProcessor = async (options: BufferProcessorOptions, callback) => {
   const { data } = options;
-  
-  if (typeof data !== "string" && !Buffer.isBuffer(data)) {
+
+  if (typeof data !== 'string' && !Buffer.isBuffer(data)) {
     throw new Error('The supplied data must be a string or a Buffer.');
   }
   await callback(data.toString('utf-8'));
