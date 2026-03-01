@@ -65,7 +65,7 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
     throw new Error(`The request to "${url.toString()}" failed.`, { cause: response });
   }
 
-  const contentType = response.headers.get('Content-Type') || '';
+  const contentType = response.headers.get('Content-Type')?.split(';')[0] || '';
 
   if (!permittedContentTypes.includes(contentType)) {
     throw new Error(`Content-Type "${contentType}" is not supported. Supported content types are: ${permittedContentTypes.join(', ')}.
