@@ -7,7 +7,7 @@
     "cli": "dist/run.js"
   },
   "bin": {
-    "fhir-enum": "dist/run.js"
+    "fhir-enum-gen": "dist/run.js"
   },
   "type": "commonjs",
   "private": true,

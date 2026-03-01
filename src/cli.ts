@@ -120,7 +120,7 @@ class TypeScriptEnumGeneratorAction extends CommandLineAction {
 export default class EnumGeneratorParser extends CommandLineParser {
   constructor() {
     super({
-      toolFilename: 'FHIR ValueSet Enum Generator',
+      toolFilename: 'fhir-enum-gen',
       toolDescription: 'Generates enums that represent FHIR code/Coding values from their ValueSets.',
     });
 
