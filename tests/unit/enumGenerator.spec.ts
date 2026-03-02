@@ -166,7 +166,7 @@ describe('stringEnumGenerator tests', () => {
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which there is not description/display.', () => {
+  it('Returns the expected value for a ValueSet in which there is no description/display.', () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'NoDescription',
@@ -186,6 +186,35 @@ describe('stringEnumGenerator tests', () => {
       join(__dirname, '__fixtures__', 'noDescriptionValueSetEnum.ts'),
       'utf-8',
     ).replace(/\s/g, '');
+
+    const result = generateEnum(vs, {
+      propertyNamingStrategy: new PropertyNamingStrategy({
+        type: PropertyNamingStrategyType.CODE,
+      }),
+    });
+
+    expect(result.replace(/\s/g, '')).toEqual(expectedValue);
+  });
+
+  it('Returns the expected value for a ValueSet in which there is no description or name.', () => {
+    const vs: ValueSet = {
+      resourceType: 'ValueSet',
+      status: 'active',
+      expansion: {
+        timestamp: new Date().toISOString(),
+        contains: [
+          {
+            code: 'THI',
+            system: 'http://example.com',
+          },
+        ],
+      },
+    };
+
+    const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'noNameValueSetEnum.ts'), 'utf-8').replace(
+      /\s/g,
+      '',
+    );
 
     const result = generateEnum(vs, {
       propertyNamingStrategy: new PropertyNamingStrategy({

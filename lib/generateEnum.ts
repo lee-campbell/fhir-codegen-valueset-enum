@@ -1,6 +1,7 @@
 import EnumNamingStrategy, { EnumNamingStrategyType } from './enumNamingStrategy';
 import PropertyNamingStrategy, { PropertyNamingStrategyType } from './propertyNamingStrategy';
 import type { ValueSet, ValueSetExpansionContains } from './types';
+import { sanitiseName } from './utils';
 
 export type EnumType = 'code' | 'Coding' | 'both';
 
@@ -19,9 +20,14 @@ type PropertyDefinition = {
 
 export type EnumGeneratorOptions = {
   enumType: EnumType;
-  includeExportKeyword?: boolean;
+  includeExportKeyword: boolean;
   enumNamingStrategy: EnumNamingStrategy;
   propertyNamingStrategy: PropertyNamingStrategy;
+  /**
+   * When the naming strategy fails to provide a name (e.g. if the ValueSet contains neither a "name" nor a
+   * "description"), use this name to name the enum instead.
+   */
+  nameOverride: string;
 };
 
 const getCommentString = (prop: PropertyDefinition): string => {
@@ -88,11 +94,11 @@ const getPropertyDefintionsFromContains = (
   parent?: ValueSetExpansionContains,
 ): PropertyDefinition[] => {
   contains.forEach((c) => {
-    if (!c.abstract) {
+    if (!c.abstract && c.code) {
       const def: PropertyDefinition = {
         name: namingStrategy.getName(c, parent),
         comment: c.display,
-        value: c.code!,
+        value: c.code,
         system: c.system,
         // @ts-expect-error
         deprecated: c.inactive,
@@ -114,6 +120,7 @@ const defaultOptions: EnumGeneratorOptions = {
   includeExportKeyword: false,
   enumNamingStrategy: new EnumNamingStrategy({ type: EnumNamingStrategyType.SIMPLE }),
   propertyNamingStrategy: new PropertyNamingStrategy({ type: PropertyNamingStrategyType.DISPLAY }),
+  nameOverride: 'UnnamedValueSet',
 };
 
 /**
@@ -125,28 +132,24 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
     throw new Error(`The supplied ValueSet must contain an expansion in order to generate an enum of its values.`);
   }
 
-  if (options) {
-    options = Object.assign({ ...defaultOptions }, options);
-  } else {
-    options = defaultOptions;
-  }
+  const opts = options ? Object.assign({ ...defaultOptions }, options) : defaultOptions;
 
   const enumDef: EnumDefinition = {
-    name: options.enumNamingStrategy!.getName(vs),
-    comment: (vs.description || vs.name)!,
+    name: opts.enumNamingStrategy.getName(vs) || sanitiseName(opts.nameOverride),
+    comment: vs.description || vs.name || 'No description provided',
   };
 
-  const properties = getPropertyDefintionsFromContains([], options.propertyNamingStrategy!, vs.expansion.contains);
+  const properties = getPropertyDefintionsFromContains([], opts.propertyNamingStrategy, vs.expansion.contains);
 
   let retVal = '';
 
-  if (options.enumType === 'both' || options.enumType === 'code') {
-    retVal += generateCodeEnum(enumDef, properties, options.includeExportKeyword!);
+  if (opts.enumType === 'both' || opts.enumType === 'code') {
+    retVal += generateCodeEnum(enumDef, properties, opts.includeExportKeyword);
   }
 
-  if (options.enumType === 'both' || options.enumType === 'Coding') {
+  if (opts.enumType === 'both' || opts.enumType === 'Coding') {
     if (retVal) retVal += '\n';
-    retVal += generateCodingEnum(enumDef, properties, options.includeExportKeyword!);
+    retVal += generateCodingEnum(enumDef, properties, opts.includeExportKeyword);
   }
 
   return retVal;
