@@ -1,6 +1,6 @@
 import type { ValueSetExpansionContains } from 'fhir/r5';
 import { describe, expect, it } from 'vitest';
-import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../src/propertyNamingStrategy';
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../lib/propertyNamingStrategy';
 
 describe('propertyNamingStrategy tests', () => {
   it('Throws an error when an invalid property naming strategy is supplied', () => {

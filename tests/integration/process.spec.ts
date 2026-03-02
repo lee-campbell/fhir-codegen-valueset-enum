@@ -2,7 +2,7 @@ import type { ValueSet } from 'fhir/r5';
 import { existsSync, readFileSync, rmdirSync } from 'fs';
 import { join } from 'path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import processInputs from '../../src/process';
+import processInputs from '../../lib/process';
 
 const outputDirectory = join(__dirname, '__outputs__');
 

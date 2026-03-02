@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitiseName } from '../../src/utils';
+import { sanitiseName } from '../../lib/utils';
 
 describe('utils tests', () => {
   describe('sanitiseName function tests', () => {

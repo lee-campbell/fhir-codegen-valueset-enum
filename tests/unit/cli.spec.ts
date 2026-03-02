@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import EnumGeneratorParser from '../../src/cli';
+import EnumGeneratorParser from '../../cli/cli';
 
 vi.mock('../../src/process');
 

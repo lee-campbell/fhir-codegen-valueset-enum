@@ -1,7 +1,7 @@
 import { existsSync, rmdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
-import processInputs from '../../src/process';
+import processInputs from '../../lib/process';
 
 const outputDirectory = join(__dirname, '__outputs__');
 

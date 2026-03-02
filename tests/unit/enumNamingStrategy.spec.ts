@@ -1,6 +1,6 @@
 import type { ValueSet } from 'fhir/r5';
 import { describe, expect, it } from 'vitest';
-import EnumNamingStrategy, { EnumNamingStrategyType } from '../../src/enumNamingStrategy';
+import EnumNamingStrategy, { EnumNamingStrategyType } from '../../lib/enumNamingStrategy';
 
 describe('enumNamingStrategy tests', () => {
   it('Throws an error when an invalid naming strategy type is supplied.', () => {

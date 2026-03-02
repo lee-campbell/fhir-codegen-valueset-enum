@@ -5,10 +5,10 @@ import {
   CommandLineParser,
   type CommandLineStringParameter,
 } from '@rushstack/ts-command-line';
-import EnumNamingStrategy, { EnumNamingStrategyType } from './enumNamingStrategy';
-import type { EnumType } from './generateEnum';
-import processInputs from './process';
-import PropertyNamingStrategy, { PropertyNamingStrategyType } from './propertyNamingStrategy';
+import EnumNamingStrategy, { EnumNamingStrategyType } from '../lib/enumNamingStrategy';
+import type { EnumType } from '../lib/generateEnum';
+import processInputs from '../lib/process';
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../lib/propertyNamingStrategy';
 
 class TypeScriptEnumGeneratorAction extends CommandLineAction {
   private _inputUrl: CommandLineStringParameter;

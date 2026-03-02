@@ -1,6 +1,6 @@
 import type { Bundle, OperationOutcome, ValueSet } from 'fhir/r5';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import urlProcessor from '../../../src/preprocessor/urlProcessor';
+import urlProcessor from '../../../lib/preprocessor/urlProcessor';
 
 describe('urlProcessor tests', () => {
   const callback = vi.fn();

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import globProcessor from '../../../src/preprocessor/globProcessor';
+import globProcessor from '../../../lib/preprocessor/globProcessor';
 
 describe('globProcessor tests', () => {
   const callback = vi.fn();

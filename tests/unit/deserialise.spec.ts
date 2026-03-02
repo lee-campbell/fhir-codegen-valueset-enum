@@ -1,6 +1,6 @@
 import { type Bundle, type ValueSet, ValueSetCompose } from 'fhir/r5';
 import { describe, expect, it } from 'vitest';
-import deserialise from '../../src/deserialise';
+import deserialise from '../../lib/deserialise';
 
 describe('deserialise tests', () => {
   it('Throws an error when the supplied data is not JSON', () => {

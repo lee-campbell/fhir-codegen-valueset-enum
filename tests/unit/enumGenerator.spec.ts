@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ValueSet } from 'fhir/r5';
 import { describe, expect, it } from 'vitest';
-import generateEnum from '../../src/generateEnum';
-import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../src/propertyNamingStrategy';
+import generateEnum from '../../lib/generateEnum';
+import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../lib/propertyNamingStrategy';
 
 describe('stringEnumGenerator tests', () => {
   it('Throws an error if the supplied ValueSet has no expansion', () => {
