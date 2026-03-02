@@ -4,7 +4,7 @@ import { sanitiseName } from './utils';
 export enum PropertyNamingStrategyType {
   CODE = 'code',
   DISPLAY = 'display',
-  SYSTEMAWARE = 'system_aware',
+  SYSTEM_AWARE = 'system_aware',
   CUSTOM = 'custom',
 }
 
@@ -17,7 +17,7 @@ const codePropertyNamingStrategy: PropertyNamingStrategyFunction = (contains, pa
   let name = sanitiseName(contains.code?.toUpperCase());
 
   if (parent) {
-    name = sanitiseName(parent.code?.toUpperCase()) + '_' + name;
+    name = `${sanitiseName(parent.code?.toUpperCase())}_${name}`;
   }
 
   return name;
@@ -27,7 +27,7 @@ const displayPropertyNamingStrategy: PropertyNamingStrategyFunction = (contains,
   let name = sanitiseName(contains.display?.toUpperCase());
 
   if (parent) {
-    name = sanitiseName(parent.display?.toUpperCase()) + '_' + name;
+    name = `${sanitiseName(parent.display?.toUpperCase())}_${name}`;
   }
 
   return name;
@@ -53,7 +53,7 @@ export default class PropertyNamingStrategy {
       case PropertyNamingStrategyType.DISPLAY:
         this.getName = displayPropertyNamingStrategy;
         break;
-      case PropertyNamingStrategyType.SYSTEMAWARE:
+      case PropertyNamingStrategyType.SYSTEM_AWARE:
         this.getName = systemAwarePropertyNamingStrategy;
         break;
       case PropertyNamingStrategyType.CUSTOM:

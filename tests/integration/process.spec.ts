@@ -1,6 +1,6 @@
+import { existsSync, readFileSync, rmdirSync } from 'node:fs';
+import { join } from 'node:path';
 import type { ValueSet } from 'fhir/r5';
-import { existsSync, readFileSync, rmdirSync } from 'fs';
-import { join } from 'path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import processInputs from '../../lib/process';
 

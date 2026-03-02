@@ -1,0 +1,112 @@
+/* Toast styles */
+#toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+.toast {
+  background: #d32f2f;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 12px;
+  font-size: 1rem;
+  animation:
+    fadein 0.3s,
+    fadeout 0.5s 2.5s;
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+h1 {
+  text-align: center;
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+p {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+}
+/* Center the page title */
+h1 {
+  text-align: center;
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
+.controls label {
+  margin-right: 8px;
+}
+.control-group {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.editor {
+  display: flex;
+  gap: 32px;
+}
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+textarea {
+  font-family: "Fira Mono", "Consolas", monospace;
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  background: #fafafa;
+}
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background: #0078d4;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #005fa3;
+}

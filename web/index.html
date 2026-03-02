@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FHIR ValueSet to TypeScript Enum</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/prettier@3.4.2/standalone.js"></script>
+  <script src="https://unpkg.com/prettier@3.4.2/parser-typescript.js"></script>
+</head>
+<body>
+  <div id="toast-container"></div>
+  <div class="container">
+    <h1>FHIR ValueSet to TypeScript Enum Generator</h1>
+    <p><i>Converts FHIR ValueSets into usable TypeScript enums.</i></p>
+    <div class="controls">
+      <div class="control-group">
+        <label for="enumType">Enum Type:</label>
+        <select id="enumType">
+          <option value="code">code</option>
+          <option value="Coding">Coding</option>
+          <option value="both">both</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="includeExportKeyword">Include export keyword:</label>
+        <input type="checkbox" id="includeExportKeyword" />
+      </div>
+      <div class="control-group">
+        <label for="enumNamingStrategy">Enum Naming Strategy:</label>
+        <select id="enumNamingStrategy">
+          <option value="SIMPLE">Simple</option>
+          <option value="VERSION_AWARE">Version Aware</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="propertyNamingStrategy">Property Naming Strategy:</label>
+        <select id="propertyNamingStrategy">
+          <option value="CODE">Code</option>
+          <option value="DISPLAY">Display</option>
+          <option value="SYSTEM_AWARE">System Aware</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="nameOverride">Name Override:</label>
+        <input type="text" id="nameOverride" placeholder="UnnamedValueSet" />
+      </div>
+      <div class="control-group">
+        <button id="generateBtn" type="button">Generate Enum</button>
+      </div>
+    </div>
+    <div class="editor">
+      <div class="pane">
+        <label for="inputValueSet">FHIR ValueSet (JSON):</label>
+        <textarea id="inputValueSet" rows="20" cols="40" placeholder="Paste FHIR ValueSet JSON here..."></textarea>
+      </div>
+      <div class="pane">
+        <label for="outputEnum">TypeScript Enum:</label>
+        <textarea id="outputEnum" rows="20" cols="40" readonly></textarea>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

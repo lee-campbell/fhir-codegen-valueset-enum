@@ -33,7 +33,7 @@ describe('propertyNamingStrategy tests', () => {
 
   it('Assigns the "system-aware" naming strategy', () => {
     const strategy = new PropertyNamingStrategy({
-      type: PropertyNamingStrategyType.SYSTEMAWARE,
+      type: PropertyNamingStrategyType.SYSTEM_AWARE,
     });
 
     expect(strategy.getName.name).toEqual('systemAwarePropertyNamingStrategy');
@@ -139,7 +139,7 @@ describe('propertyNamingStrategy tests', () => {
 
   it('Uses the "system-aware" strategy.', () => {
     const strategy = new PropertyNamingStrategy({
-      type: PropertyNamingStrategyType.SYSTEMAWARE,
+      type: PropertyNamingStrategyType.SYSTEM_AWARE,
     });
 
     const vsec: ValueSetExpansionContains = {

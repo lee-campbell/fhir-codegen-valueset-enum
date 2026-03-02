@@ -16,7 +16,8 @@
     "prebuild": "rimraf dist/",
     "build": "tsc --project tsconfig.build.json",
     "lint": "biome check .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "bundle:web": "esbuild web/main.ts --bundle --outfile=web/main.js --format=esm"
   },
   "keywords": [
     "fhir",
@@ -32,6 +33,7 @@
     "@biomejs/biome": "^2.4.4",
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "^2.1.8",
+    "esbuild": "^0.27.3",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",

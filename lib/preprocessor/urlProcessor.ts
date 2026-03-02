@@ -55,8 +55,8 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
 
   try {
     parsedUrl = new URL(url);
-  } catch (ex: any) {
-    throw new Error(`Unable to parse the supplied URL "${url.toString()}"`);
+  } catch (ex) {
+    throw new Error(`Unable to parse the supplied URL "${url.toString()}"`, { cause: ex });
   }
 
   let response: Response;
@@ -78,7 +78,7 @@ const urlProcessor: InputDataProcessor = async (options: UrlProcessorOptions, ca
     Hint: including the query string parameter "_format=json" will instruct some terminology servers to return JSON.`);
   }
 
-  const data: any = await response.json();
+  const data = (await response.json()) as ValueSet | Bundle<ValueSet>;
 
   if (!permittedResourceTypes.includes(data.resourceType)) {
     throw new Error(
