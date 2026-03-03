@@ -1,7 +1,13 @@
+// Declare global variables provided by CDN script tags
+// declare const prettier: any;
+// declare const prettierPlugins: any;
+
+import prettier from 'prettier/standalone';
+import parserTypescript from 'prettier/plugins/typescript';
+import estreePlugin from 'prettier/plugins/estree';
+
 import generateEnum from '../lib/generateEnum';
 import type { EnumGeneratorOptions, EnumType } from '../lib/generateEnum';
-import prettier from 'prettier/standalone';
-import parserTypeScript from 'prettier/parser-typescript';
 
 const inputValueSet = document.getElementById('inputValueSet') as HTMLTextAreaElement;
 const outputEnum = document.getElementById('outputEnum') as HTMLTextAreaElement;
@@ -46,14 +52,14 @@ generateBtn.addEventListener('click', async () => {
   options.propertyNamingStrategy = new PropertyNamingStrategy({
     type: PropertyNamingStrategyType[propertyNamingStrategySelect.value as keyof typeof PropertyNamingStrategyType],
   });
+  options.formatter = (code: string) =>
+    prettier.format(code, {
+      parser: 'typescript',
+      plugins: [parserTypescript, estreePlugin],
+    });
 
   try {
-    const enumStr = generateEnum(valueSet as import('../lib/types').ValueSet, options);
-    const formatted = await prettier.format(enumStr, {
-      parser: 'typescript',
-      plugins: [parserTypeScript],
-    });
-    outputEnum.value = formatted;
+    outputEnum.value = await generateEnum(valueSet as import('../lib/types').ValueSet, options);
   } catch (err) {
     outputEnum.value = err instanceof Error && err.message ? err.message : 'Error generating enum.';
   }

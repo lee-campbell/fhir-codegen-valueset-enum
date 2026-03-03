@@ -1,6 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import * as prettier from 'prettier';
 import deserialise from './deserialise';
 import generateEnum, { type EnumGeneratorOptions } from './generateEnum';
 import bufferProcessor from './preprocessor/bufferProcessor';
@@ -23,14 +22,13 @@ const processInput = async (input: string, options: ProcessingOptions): Promise<
   const valueSets = deserialise(input);
 
   for (const v of valueSets) {
-    const generatedEnum = generateEnum(v, options);
-    const formattedEnum = await prettier.format(generatedEnum, { parser: 'babel-ts', singleQuote: true });
+    const generatedEnum = await generateEnum(v, options);
 
     if (options.outputDirectory) {
       const outputPath = join(options.outputDirectory, `${v.name}.ts`);
-      await writeFile(outputPath, formattedEnum, 'utf-8');
+      await writeFile(outputPath, generatedEnum, 'utf-8');
     } else {
-      console.log(formattedEnum);
+      console.log(generatedEnum);
     }
   }
 };

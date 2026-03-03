@@ -42,6 +42,6 @@
   "dependencies": {
     "@rushstack/ts-command-line": "^4.23.2",
     "@types/fhir": "^0.0.41",
-    "prettier": "^3.4.2"
+    "prettier": "^3.8.1"
   }
 }

@@ -6,7 +6,7 @@ import generateEnum from '../../lib/generateEnum';
 import PropertyNamingStrategy, { PropertyNamingStrategyType } from '../../lib/propertyNamingStrategy';
 
 describe('stringEnumGenerator tests', () => {
-  it('Throws an error if the supplied ValueSet has no expansion', () => {
+  it('Throws an error if the supplied ValueSet has no expansion', async () => {
     expect.assertions(1);
 
     const vs: ValueSet = {
@@ -15,7 +15,7 @@ describe('stringEnumGenerator tests', () => {
     };
 
     try {
-      generateEnum(vs);
+      await generateEnum(vs);
     } catch (ex: any) {
       expect(ex.message).toEqual(
         'The supplied ValueSet must contain an expansion in order to generate an enum of its values.',
@@ -23,7 +23,7 @@ describe('stringEnumGenerator tests', () => {
     }
   });
 
-  it('Throws an error if the supplied ValueSet has no expansion.contains', () => {
+  it('Throws an error if the supplied ValueSet has no expansion.contains', async () => {
     expect.assertions(1);
 
     const vs: ValueSet = {
@@ -35,7 +35,7 @@ describe('stringEnumGenerator tests', () => {
     };
 
     try {
-      generateEnum(vs);
+      await generateEnum(vs);
     } catch (ex: any) {
       expect(ex.message).toEqual(
         'The supplied ValueSet must contain an expansion in order to generate an enum of its values.',
@@ -43,7 +43,7 @@ describe('stringEnumGenerator tests', () => {
     }
   });
 
-  it('Returns the expected value for a simple ValueSet.', () => {
+  it('Returns the expected value for a simple ValueSet.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'Simple',
@@ -66,12 +66,12 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs);
+    const result = await generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a nested ValueSet.', () => {
+  it('Returns the expected value for a nested ValueSet.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'Nested',
@@ -98,12 +98,12 @@ describe('stringEnumGenerator tests', () => {
 
     const expectedValue = readFileSync(join(__dirname, '__fixtures__', 'nestedValueSetEnum.ts'), 'utf-8');
 
-    const result = generateEnum(vs);
+    const result = await generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).stringEqualIgnoringWhitespace(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which one of the codes has been deprecated.', () => {
+  it('Returns the expected value for a ValueSet in which one of the codes has been deprecated.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'Deprecated',
@@ -127,12 +127,12 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs);
+    const result = await generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which one of the codes has been marked as abstract.', () => {
+  it('Returns the expected value for a ValueSet in which one of the codes has been marked as abstract.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'Abstract',
@@ -161,12 +161,12 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs);
+    const result = await generateEnum(vs);
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which there is no description/display.', () => {
+  it('Returns the expected value for a ValueSet in which there is no description/display.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'NoDescription',
@@ -187,7 +187,7 @@ describe('stringEnumGenerator tests', () => {
       'utf-8',
     ).replace(/\s/g, '');
 
-    const result = generateEnum(vs, {
+    const result = await generateEnum(vs, {
       propertyNamingStrategy: new PropertyNamingStrategy({
         type: PropertyNamingStrategyType.CODE,
       }),
@@ -196,7 +196,7 @@ describe('stringEnumGenerator tests', () => {
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Returns the expected value for a ValueSet in which there is no description or name.', () => {
+  it('Returns the expected value for a ValueSet in which there is no description or name.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       status: 'active',
@@ -216,7 +216,7 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs, {
+    const result = await generateEnum(vs, {
       propertyNamingStrategy: new PropertyNamingStrategy({
         type: PropertyNamingStrategyType.CODE,
       }),
@@ -225,7 +225,7 @@ describe('stringEnumGenerator tests', () => {
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Includes the "export" keyword when instructed to do so.', () => {
+  it('Includes the "export" keyword when instructed to do so.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'Simple',
@@ -248,12 +248,12 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs, { includeExportKeyword: true });
+    const result = await generateEnum(vs, { includeExportKeyword: true });
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Produces both a "code" and a "Coding" enum.', () => {
+  it('Produces both a "code" and a "Coding" enum.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'MyValueSet',
@@ -276,12 +276,12 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs, { includeExportKeyword: true, enumType: 'Coding' });
+    const result = await generateEnum(vs, { includeExportKeyword: true, enumType: 'Coding' });
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });
 
-  it('Produces both a "code" and a "Coding" enum.', () => {
+  it('Produces both a "code" and a "Coding" enum.', async () => {
     const vs: ValueSet = {
       resourceType: 'ValueSet',
       name: 'MyValueSet',
@@ -304,7 +304,7 @@ describe('stringEnumGenerator tests', () => {
       '',
     );
 
-    const result = generateEnum(vs, { includeExportKeyword: true, enumType: 'both' });
+    const result = await generateEnum(vs, { includeExportKeyword: true, enumType: 'both' });
 
     expect(result.replace(/\s/g, '')).toEqual(expectedValue);
   });

@@ -1,3 +1,4 @@
+import * as prettier from 'prettier';
 import EnumNamingStrategy, { EnumNamingStrategyType } from './enumNamingStrategy';
 import PropertyNamingStrategy, { PropertyNamingStrategyType } from './propertyNamingStrategy';
 import type { ValueSet, ValueSetExpansionContains } from './types';
@@ -28,6 +29,10 @@ export type EnumGeneratorOptions = {
    * "description"), use this name to name the enum instead.
    */
   nameOverride: string;
+  /**
+   * Optional formatter function for output (e.g., Prettier). Defaults to Prettier with babel-ts parser.
+   */
+  formatter?: (code: string) => string | Promise<string>;
 };
 
 const getCommentString = (prop: PropertyDefinition): string => {
@@ -121,18 +126,21 @@ const defaultOptions: EnumGeneratorOptions = {
   enumNamingStrategy: new EnumNamingStrategy({ type: EnumNamingStrategyType.SIMPLE }),
   propertyNamingStrategy: new PropertyNamingStrategy({ type: PropertyNamingStrategyType.DISPLAY }),
   nameOverride: 'UnnamedValueSet',
+  formatter: (code: string) => prettier.format(code, { parser: 'babel-ts', singleQuote: true }),
 };
+
 
 /**
  * Creates a string representation of the TypeScript enum.
  * @param vs The expanded ValueSet from which the enum is to be generated.
+ * @param options Enum generation options (can override formatter)
  */
-const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): string => {
+const generateEnum = async (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): Promise<string> => {
   if (!vs.expansion || !vs.expansion.contains) {
     throw new Error(`The supplied ValueSet must contain an expansion in order to generate an enum of its values.`);
   }
 
-  const opts = options ? Object.assign({ ...defaultOptions }, options) : defaultOptions;
+  const opts: EnumGeneratorOptions = options ? { ...defaultOptions, ...options } : defaultOptions;
 
   const enumDef: EnumDefinition = {
     name: opts.enumNamingStrategy.getName(vs) || sanitiseName(opts.nameOverride),
@@ -152,6 +160,9 @@ const generateEnum = (vs: ValueSet, options?: Partial<EnumGeneratorOptions>): st
     retVal += generateCodingEnum(enumDef, properties, opts.includeExportKeyword);
   }
 
+  if (opts.formatter) {
+    return await opts.formatter(retVal);
+  }
   return retVal;
 };
 
