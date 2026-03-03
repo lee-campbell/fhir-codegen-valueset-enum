@@ -51,7 +51,102 @@
     <div class="editor">
       <div class="pane">
         <label for="inputValueSet">FHIR ValueSet (JSON):</label>
-        <textarea id="inputValueSet" rows="20" cols="40" placeholder="Paste FHIR ValueSet JSON here..."></textarea>
+        <textarea id="inputValueSet" rows="20" cols="40" placeholder="Paste FHIR ValueSet JSON here...">{
+  "resourceType": "ValueSet",
+  "meta": {
+    "lastUpdated": "2023-03-26T15:21:02.749+11:00",
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
+    ]
+  },
+  "url": "http://hl7.org/fhir/ValueSet/issue-severity",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.3.408"
+    },
+    {
+      "use": "old",
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.3.397"
+    },
+    {
+      "use": "old",
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.2.223"
+    }
+  ],
+  "version": "5.0.0",
+  "name": "IssueSeverity",
+  "title": "Issue Severity",
+  "status": "active",
+  "experimental": false,
+  "date": "2020-12-28T16:55:11+11:00",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://hl7.org/fhir"
+        },
+        {
+          "system": "email",
+          "value": "fhir@lists.hl7.org"
+        }
+      ]
+    }
+  ],
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "system": "http://unstats.un.org/unsd/methods/m49/m49.htm",
+          "code": "001",
+          "display": "World"
+        }
+      ]
+    }
+  ],
+  "immutable": true,
+  "expansion": {
+    "timestamp": "2026-03-03T21:55:46.200Z",
+    "identifier": "urn:uuid:8e02fd36-c864-4cad-89b5-cec94a15acbc",
+    "parameter": [
+      {
+        "name": "used-codesystem",
+        "valueUri": "http://hl7.org/fhir/issue-severity|5.0.0"
+      }
+    ],
+    "total": 5,
+    "contains": [
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "fatal",
+        "display": "Fatal"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "error",
+        "display": "Error"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "warning",
+        "display": "Warning"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "information",
+        "display": "Information"
+      },
+      {
+        "system": "http://hl7.org/fhir/issue-severity",
+        "code": "success",
+        "display": "Operation Successful"
+      }
+    ]
+  }
+}</textarea>
       </div>
       <div class="pane">
         <label for="outputEnum">TypeScript Enum:</label>
