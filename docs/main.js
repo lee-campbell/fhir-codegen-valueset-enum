@@ -20635,9 +20635,9 @@ ${includeExportKeyword ? "export " : ""}enum ${enumDef.name} {
   }
 });
 
-// web/main.ts
+// docs/main.ts
 var require_main = __commonJS({
-  "web/main.ts"() {
+  "docs/main.ts"() {
     init_standalone();
     init_typescript();
     init_estree();

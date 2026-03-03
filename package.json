@@ -17,7 +17,7 @@
     "build": "tsc --project tsconfig.build.json",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "bundle:web": "esbuild web/main.ts --bundle --outfile=web/main.js --format=esm"
+    "bundle:web": "esbuild docs/main.ts --bundle --outfile=docs/main.js --format=esm"
   },
   "keywords": [
     "fhir",
