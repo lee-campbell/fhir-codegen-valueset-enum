@@ -44,7 +44,7 @@ console.log(tsEnum);
 
 ## Web Demo
 
-Try the [demo](https://lee-campbell.github.io/fhir-codegen-valueset-enum/docs/) to paste a FHIR ValueSet and instantly generate a TypeScript enum.
+Try the [demo](https://lee-campbell.github.io/fhir-codegen-valueset-enum/) to paste a FHIR ValueSet and instantly generate a TypeScript enum.
 
 ## Options
 
